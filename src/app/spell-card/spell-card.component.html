@@ -178,23 +178,32 @@
               <span *ngIf="!showAdditionalDamage">▶</span>
             </button>
           </div>
-          <div class="damage-stats-container compact" *ngIf="showAdditionalDamage">
+          <div class="subdomain-grid" *ngIf="showAdditionalDamage">
             <div class="stat-row mini">
               <label>Damage:</label>
-              <input type="number" min="0" [(ngModel)]="additionalStats.danioInfligido" (change)="calculateDamage()" class="damage-bonus-input mini">%
+              <input type="number" min="0" [(ngModel)]="additionalStats.danioInfligido" (change)="calculateDamage()" class="subdomain-input mini">
+              <span class="percent-sign">%</span>
             </div>
-            <div class="stat-row mini indirect-container" [class.active]="isIndirect">
-              <div class="indirect-header mini">
-                <label>Indirect:</label>
-                <div class="toggle-switch mini" [class.active]="isIndirect" (click)="toggleEsIndirecto()">
-                  <div class="toggle-indicator" [class.active]="isIndirect"></div>
+            
+            <div class="stat-row mini">
+              <div style="display: flex; align-items: center; width: 100%; justify-content: space-between;">
+                <div style="display: flex; align-items: center;">
+                  <label>Indirect:</label>
+                  <div class="toggle-switch small" [class.active]="isIndirect" (click)="toggleEsIndirecto()">
+                    <div class="toggle-indicator" [class.active]="isIndirect"></div>
+                  </div>
+                </div>
+                <div style="display: flex; align-items: center;">
+                  <input type="number" min="0" [(ngModel)]="additionalStats.danioIndirecto" (change)="calculateDamage()" [disabled]="!isIndirect" class="subdomain-input mini" [class.disabled]="!isIndirect">
+                  <span class="percent-sign">%</span>
                 </div>
               </div>
-              <input type="number" min="0" [(ngModel)]="additionalStats.danioIndirecto" (change)="calculateDamage()" [disabled]="!isIndirect" class="damage-bonus-input mini">%
             </div>
+            
             <div class="stat-row mini">
               <label>Critical:</label>
-              <input type="number" min="0" [(ngModel)]="additionalStats.danioCriticoInfligido" (change)="calculateDamage()" class="damage-bonus-input mini">%
+              <input type="number" min="0" [(ngModel)]="additionalStats.danioCriticoInfligido" (change)="calculateDamage()" class="subdomain-input mini">
+              <span class="percent-sign">%</span>
             </div>
           </div>
         </div>

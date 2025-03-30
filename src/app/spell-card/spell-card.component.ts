@@ -34,6 +34,7 @@ export class SpellCardComponent implements OnInit, OnDestroy {
   isCritical: boolean = false;
   isBerserker: boolean = false;
   isIndirect: boolean = false;
+  tempIndirectoValue: number = 0;
   
   // Character domain levels
   domainLevels: Record<DomainType, number> = {
@@ -529,8 +530,15 @@ export class SpellCardComponent implements OnInit, OnDestroy {
   // Toggle for indirect attack
   toggleEsIndirecto(): void {
     this.isIndirect = !this.isIndirect;
+    if (!this.isIndirect) {
+      // Si se desactiva indirect, guardamos temporalmente el valor y lo ponemos a 0
+      this.tempIndirectoValue = this.additionalStats.danioIndirecto;
+      this.additionalStats.danioIndirecto = 0;
+    } else if (this.tempIndirectoValue !== undefined) {
+      // Si se reactiva y teníamos un valor guardado, lo restauramos
+      this.additionalStats.danioIndirecto = this.tempIndirectoValue;
+    }
     this.calculateDamage();
-    this.saveCurrentSimulation();
   }
   
   // Actualiza un nivel de dominio
