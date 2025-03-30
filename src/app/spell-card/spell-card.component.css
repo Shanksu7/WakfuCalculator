@@ -1,0 +1,887 @@
+/* Estilos para la ficha de hechizo de Wakfu */
+.wakfu-spell-card {
+  font-family: 'Arial', sans-serif;
+  background: #2a2a2a;
+  border-radius: 10px;
+  color: #e0e0e0;
+  width: 100%;
+  max-width: 1300px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  margin: 20px auto;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Encabezado de la carta */
+.spell-header {
+  background: linear-gradient(to right, #3a3a3a, #454545);
+  padding: 10px 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #555;
+}
+
+.spell-header h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: bold;
+  color: #f0f0f0;
+  outline: none;
+}
+
+.close-button {
+  cursor: pointer;
+  font-size: 24px;
+  color: #888;
+  transition: color 0.2s;
+}
+
+.close-button:hover {
+  color: #e0e0e0;
+}
+
+/* Información básica del hechizo */
+.spell-basic-info {
+  display: flex;
+  padding: 15px;
+  background: #333;
+  border-bottom: 1px solid #444;
+}
+
+.spell-icon {
+  width: 70px;
+  height: 70px;
+  background: #222;
+  border-radius: 8px;
+  margin-right: 15px;
+  overflow: hidden;
+  border: 1px solid #555;
+}
+
+.spell-image {
+  width: 100%;
+  height: 100%;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50"><text x="10" y="30" font-family="Arial" font-size="30" fill="%23666">?</text></svg>');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.spell-properties {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.spell-cost, .spell-range {
+  display: flex;
+  align-items: center;
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+.spell-cost span, .spell-range span {
+  display: inline-block;
+  min-width: 20px;
+  text-align: center;
+  outline: none;
+}
+
+.pa-icon, .orbe-icon, .range-icon, .line-icon, .area-icon {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  margin-left: 5px;
+  background: #444;
+  color: #aaa;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.pa-icon {
+  color: #ffcc00;
+}
+
+.range-icon, .line-icon, .area-icon {
+  margin-left: 3px;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.active {
+  background-color: #555;
+  color: #fff;
+}
+
+/* Pestañas */
+.spell-tabs {
+  display: flex;
+  background: #252525;
+  border-bottom: 1px solid #444;
+  position: relative;
+}
+
+.tab {
+  flex: 1;
+  text-align: center;
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 14px;
+  border-bottom: 3px solid transparent;
+}
+
+.tab:hover {
+  background: #333;
+}
+
+.tab.active {
+  background: #333;
+  border-bottom: 3px solid #f0c419;
+  color: #f0c419;
+}
+
+.info-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #444;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #aaa;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+/* Efectos */
+.spell-effects, .spell-conditions, .enemy-stats, .dominio-levels, .additional-stats {
+  padding: 15px;
+  background: #333;
+  max-height: none;
+  overflow: visible;
+  height: auto;
+}
+
+.effect-row, .condition-row, .resistance-row, .dominio-slider-container, .stat-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  padding: 8px;
+  background: #3a3a3a;
+  border-radius: 5px;
+  position: relative;
+}
+
+.domain-level-row {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 8px;
+  margin-bottom: 5px;
+}
+
+.domain-level-input {
+  width: 70px;
+  padding: 8px;
+  background: #444;
+  color: #e0e0e0;
+  border: 1px solid #555;
+  border-radius: 4px;
+  outline: none;
+  text-align: center;
+  font-size: 14px;
+}
+
+.dominio-slider-container {
+  padding: 8px;
+  background: #3a3a3a;
+  border-radius: 5px;
+  margin-bottom: 5px;
+}
+
+.dominio-slider-container label {
+  margin-bottom: 5px;
+  min-width: 80px;
+  display: inline-block;
+}
+
+/* Styles for number inputs */
+input[type="number"] {
+  width: 70px;
+  padding: 8px;
+  background: #444;
+  color: #e0e0e0;
+  border: 1px solid #555;
+  border-radius: 4px;
+  outline: none;
+  text-align: center;
+  font-size: 14px;
+}
+
+/* Hide spinner buttons on number inputs */
+input[type="number"]::-webkit-inner-spin-button, 
+input[type="number"]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.effect-domain {
+  flex: 0 0 120px;
+}
+
+.effect-domain select {
+  width: 100%;
+  padding: 5px;
+  background: #444;
+  color: #e0e0e0;
+  border: 1px solid #555;
+  border-radius: 4px;
+  outline: none;
+}
+
+.effect-damage {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+}
+
+.effect-damage span {
+  min-width: 30px;
+  text-align: center;
+  margin: 0 5px;
+  outline: none;
+}
+
+.damage-separator {
+  color: #888;
+}
+
+.calculated-damage {
+  font-weight: bold;
+  color: #4fc3f7;
+}
+
+.remove-button {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #444;
+  border-radius: 50%;
+  color: #aaa;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.remove-button:hover {
+  background: #f44336;
+  color: #fff;
+}
+
+.add-effect-button, .add-condition-button {
+  width: 100%;
+  padding: 8px;
+  background: #444;
+  color: #e0e0e0;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background-color 0.2s;
+}
+
+.add-effect-button:hover, .add-condition-button:hover {
+  background: #555;
+}
+
+/* Condiciones */
+.condition-text, .condition-effect {
+  padding: 5px;
+  outline: none;
+}
+
+.condition-text {
+  flex: 1;
+  margin-right: 10px;
+}
+
+.condition-effect {
+  color: #aaa;
+}
+
+.condition-damage {
+  color: #4fc3f7;
+  font-weight: bold;
+}
+
+/* Niveles de dominio */
+.dominio-levels h4, .additional-stats h4, .enemy-stats h4 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #f0c419;
+  border-bottom: 1px solid #555;
+  padding-bottom: 5px;
+}
+
+.dominio-slider-container {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.dominio-slider-container label {
+  margin-bottom: 5px;
+  min-width: 80px;
+}
+
+input[type="range"] {
+  width: 100%;
+  margin: 5px 0;
+  -webkit-appearance: none;
+  height: 8px;
+  background: #444;
+  border-radius: 4px;
+  outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #f0c419;
+  cursor: pointer;
+}
+
+/* Estadísticas del enemigo */
+.resistance-container {
+  max-height: none;
+  overflow: visible;
+}
+
+.resistance-row {
+  justify-content: space-between;
+  padding: 10px;
+}
+
+.resistance-slider {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+}
+
+.resistance-slider input[type="range"] {
+  flex: 1;
+  -webkit-appearance: none;
+  height: 8px;
+  background: #444;
+  border-radius: 4px;
+  outline: none;
+}
+
+.resistance-slider input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #f44336;
+  cursor: pointer;
+}
+
+.resistance-value {
+  min-width: 80px;
+  text-align: right;
+  margin-left: 10px;
+  color: #f44336;
+}
+
+/* Estadísticas adicionales */
+.additional-stats-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.stats-column {
+  flex: 1;
+  min-width: 150px;
+}
+
+.stat-row {
+  padding: 8px;
+  margin-bottom: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stat-row label {
+  flex: 1;
+}
+
+.stat-row input[type="number"] {
+  width: 60px;
+  padding: 5px;
+  background: #444;
+  color: #e0e0e0;
+  border: 1px solid #555;
+  border-radius: 4px;
+  outline: none;
+  text-align: center;
+}
+
+/* Opciones para el cálculo de daño */
+.damage-calculator-options {
+  padding: 15px;
+  background: #2d2d2d;
+  border-top: 1px solid #444;
+}
+
+.damage-calculator-options h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 16px;
+  color: #f0c419;
+  border-bottom: 1px solid #555;
+  padding-bottom: 5px;
+}
+
+.option-group {
+  margin-bottom: 10px;
+}
+
+.option-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 14px;
+}
+
+.option-group select {
+  width: 100%;
+  padding: 8px;
+  background: #444;
+  color: #e0e0e0;
+  border: 1px solid #555;
+  border-radius: 4px;
+  outline: none;
+}
+
+.checkbox-group {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 15px;
+}
+
+.checkbox-item {
+  flex: 1 0 50%;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.checkbox-item input[type="checkbox"] {
+  margin-right: 5px;
+}
+
+/* Footer con nivel y botones */
+.spell-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  background: linear-gradient(to right, #252525, #333);
+  border-top: 1px solid #444;
+}
+
+.spell-level-indicator {
+  display: flex;
+  align-items: center;
+}
+
+.level-bullet {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #f0c419;
+  margin-right: 10px;
+}
+
+.level-number {
+  font-weight: bold;
+  color: #f0c419;
+}
+
+.spell-footer-buttons {
+  display: flex;
+}
+
+.spell-button {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #444;
+  color: #aaa;
+  border: none;
+  margin-left: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+}
+
+.spell-button:hover {
+  background: #555;
+  color: #fff;
+}
+
+.refresh:hover {
+  color: #4fc3f7;
+}
+
+.favorite:hover {
+  color: #f0c419;
+}
+
+/* Estilos para scrollbars */
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* Domain colors and icons */
+.fire-damage, .fire-text {
+  color: #ff5252 !important;
+}
+
+.water-damage, .water-text {
+  color: #40c4ff !important;
+}
+
+.air-damage, .air-text {
+  color: #b388ff !important;
+}
+
+.earth-damage, .earth-text {
+  color: #76ff03 !important;
+}
+
+.healing-damage, .healing-text {
+  color: #69f0ae !important;
+}
+
+.domain-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  margin-right: 8px;
+  font-weight: bold;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.fire-icon {
+  background: linear-gradient(135deg, #ff5252, #ff1744);
+  color: white;
+}
+
+.water-icon {
+  background: linear-gradient(135deg, #40c4ff, #00b0ff);
+  color: white;
+}
+
+.air-icon {
+  background: linear-gradient(135deg, #b388ff, #7c4dff);
+  color: white;
+}
+
+.earth-icon {
+  background: linear-gradient(135deg, #76ff03, #64dd17);
+  color: black;
+}
+
+.healing-icon {
+  background: linear-gradient(135deg, #69f0ae, #00e676);
+  color: black;
+}
+
+/* Mejorar alineación en resistencias enemigas */
+.resistance-input {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+
+.resistance-input input {
+  width: 70px;
+  text-align: center;
+}
+
+.resistance-value {
+  min-width: 50px;
+  text-align: right;
+  font-weight: bold;
+}
+
+.resistance-row label {
+  min-width: 60px;
+  display: inline-block;
+}
+
+/* Alinear elementos de domain-level-row y resistance-row */
+.domain-level-row, .resistance-row {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  background: #3a3a3a;
+  border-radius: 5px;
+  margin-bottom: 8px;
+}
+
+.domain-level-row label, .resistance-row label {
+  min-width: 60px;
+  margin-right: 5px;
+}
+
+.domain-level-input, .resistance-input input {
+  width: 70px;
+  padding: 8px;
+  background: #444;
+  color: #e0e0e0;
+  border: 1px solid #555;
+  border-radius: 4px;
+  outline: none;
+  text-align: center;
+  font-size: 14px;
+}
+
+/* Ajustar los iconos de dominio para que sean iguales */
+.domain-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  margin-right: 8px;
+  font-weight: bold;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+/* Actualización para pantallas grandes */
+@media (min-width: 768px) {
+  .spell-content-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .spell-main-content {
+    flex: 1;
+    min-width: 300px;
+  }
+
+  .spell-sidebar {
+    flex: 1;
+    min-width: 300px;
+  }
+}
+
+/* Actualización para tres columnas */
+.spell-content-wrapper {
+  padding: 15px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  min-height: 800px;
+}
+
+.spell-column {
+  flex: 1;
+  min-width: 300px;
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+.effects-column {
+  order: 1;
+}
+
+.domains-column {
+  order: 2;
+}
+
+.options-column {
+  order: 3;
+}
+
+.spell-effects, .dominio-levels, .enemy-stats, .additional-stats, .damage-calculator-options, .additional-damages {
+  background: #333;
+  border-radius: 5px;
+  padding: 15px;
+  margin-bottom: 15px;
+  overflow: visible;
+}
+
+/* Eliminar el scroll y aumentar el alto para effects */
+.effects-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 450px;
+  overflow: visible;
+}
+
+/* Eliminar el scroll y aumentar el alto para domains */
+.domains-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 300px;
+  overflow: visible;
+}
+
+/* Eliminar el scroll y aumentar el alto para enemy resistances */
+.resistance-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 300px;
+  overflow: visible;
+}
+
+.section-title {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #f0c419;
+  border-bottom: 1px solid #555;
+  padding-bottom: 5px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+/* Efectos */
+.effect-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  padding: 8px;
+  background: #3a3a3a;
+  border-radius: 5px;
+  position: relative;
+}
+
+.effect-domain {
+  flex: 0 0 120px;
+}
+
+.effect-domain select {
+  width: 100%;
+  padding: 8px;
+  background: #444;
+  color: #e0e0e0;
+  border: 1px solid #555;
+  border-radius: 4px;
+  outline: none;
+}
+
+.effect-damage {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+}
+
+.effect-damage span {
+  min-width: 30px;
+  text-align: center;
+  margin: 0 5px;
+  outline: none;
+}
+
+.damage-separator {
+  color: #888;
+}
+
+.calculated-damage {
+  font-weight: bold;
+}
+
+@media (max-width: 1100px) {
+  .spell-column {
+    flex-basis: calc(50% - 15px);
+  }
+  
+  .effects-column {
+    order: 1;
+  }
+  
+  .domains-column {
+    order: 2;
+  }
+  
+  .options-column {
+    order: 3;
+    flex-basis: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .spell-column {
+    flex-basis: 100%;
+  }
+  
+  .effects-column {
+    order: 1;
+  }
+  
+  .domains-column {
+    order: 2;
+  }
+  
+  .options-column {
+    order: 3;
+  }
+}
+
+/* Ajustes específicos para cada sección */
+.spell-effects {
+  height: auto;
+  max-height: none;
+}
+
+.dominio-levels {
+  height: auto;
+  max-height: none;
+}
+
+.enemy-stats {
+  height: auto;
+  max-height: none;
+}
+

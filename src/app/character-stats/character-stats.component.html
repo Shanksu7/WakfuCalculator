@@ -1,0 +1,253 @@
+<div class="wakfu-character-card">
+  <!-- Encabezado -->
+  <div class="card-header">
+    <h2>Personaje <span class="close-button">×</span></h2>
+  </div>
+
+  <!-- Información del personaje -->
+  <div class="character-info">
+    <div class="character-details">
+      <div class="faction" contentEditable="true" (blur)="actualizarValor(personaje, 'faccion', $event)">{{ personaje.faccion }}</div>
+      <div class="name" contentEditable="true" (blur)="actualizarValor(personaje, 'nombre', $event)">{{ personaje.nombre }}</div>
+      <div class="xp-info">
+        <span>XP</span> 
+        <span contentEditable="true" (blur)="actualizarValor(personaje, 'xpActual', $event)">{{ personaje.xpActual | number }}</span> / 
+        <span contentEditable="true" (blur)="actualizarValor(personaje, 'xpTotal', $event)">{{ personaje.xpTotal | number }}</span>
+      </div>
+      
+      <!-- Barra de XP -->
+      <div class="xp-bar">
+        <div class="xp-progress" [style.width.%]="getPorcentajeXP()"></div>
+      </div>
+      
+      <!-- Nivel -->
+      <div class="level-container">
+        <span>Niv.</span>
+        <span class="level" contentEditable="true" (blur)="actualizarValor(personaje, 'nivel', $event)">{{ personaje.nivel }}</span>
+        <span class="level-down">↓</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Estadísticas principales -->
+  <div class="main-stats">
+    <div class="stat-item">
+      <span class="stat-icon pdv">❤</span>
+      <span class="stat-label">PdV</span>
+      <span class="stat-value" contentEditable="true" (blur)="actualizarValor(stats, 'pdv', $event)">{{ stats.pdv }}</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-icon pa">★</span>
+      <span class="stat-label">PA</span>
+      <span class="stat-value" contentEditable="true" (blur)="actualizarValor(stats, 'pa', $event)">{{ stats.pa }}</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-icon pm">→</span>
+      <span class="stat-label">PM</span>
+      <span class="stat-value" contentEditable="true" (blur)="actualizarValor(stats, 'pm', $event)">{{ stats.pm }}</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-icon pw">W</span>
+      <span class="stat-label">PW</span>
+      <span class="stat-value" contentEditable="true" (blur)="actualizarValor(stats, 'pw', $event)">{{ stats.pw }}</span>
+    </div>
+  </div>
+
+  <!-- Dominios y resistencias -->
+  <div class="section-title">
+    <h3>Dominios y resistencias</h3>
+  </div>
+  
+  <div class="dominios-grid">
+    <!-- Fuego -->
+    <div class="dominio-item">
+      <span class="elemento-icon fuego">🔥</span>
+      <div class="dominio-valor" contentEditable="true" (blur)="actualizarDominio('fuego', 'valor', $event)">{{ dominios['fuego'].valor }}</div>
+      <div class="dominio-porcentaje">{{ calcularPorcentajeResistencia(dominios['fuego'].bonus) }}%(<span contentEditable="true" (blur)="actualizarDominio('fuego', 'bonus', $event)">{{ dominios['fuego'].bonus }}</span>)</div>
+    </div>
+    
+    <!-- Agua -->
+    <div class="dominio-item">
+      <span class="elemento-icon agua">💧</span>
+      <div class="dominio-valor" contentEditable="true" (blur)="actualizarDominio('agua', 'valor', $event)">{{ dominios['agua'].valor }}</div>
+      <div class="dominio-porcentaje">{{ calcularPorcentajeResistencia(dominios['agua'].bonus) }}%(<span contentEditable="true" (blur)="actualizarDominio('agua', 'bonus', $event)">{{ dominios['agua'].bonus }}</span>)</div>
+    </div>
+    
+    <!-- Tierra -->
+    <div class="dominio-item">
+      <span class="elemento-icon tierra">🌿</span>
+      <div class="dominio-valor" contentEditable="true" (blur)="actualizarDominio('tierra', 'valor', $event)">{{ dominios['tierra'].valor }}</div>
+      <div class="dominio-porcentaje">{{ calcularPorcentajeResistencia(dominios['tierra'].bonus) }}%(<span contentEditable="true" (blur)="actualizarDominio('tierra', 'bonus', $event)">{{ dominios['tierra'].bonus }}</span>)</div>
+    </div>
+    
+    <!-- Aire -->
+    <div class="dominio-item">
+      <span class="elemento-icon aire">💜</span>
+      <div class="dominio-valor" contentEditable="true" (blur)="actualizarDominio('aire', 'valor', $event)">{{ dominios['aire'].valor }}</div>
+      <div class="dominio-porcentaje">{{ calcularPorcentajeResistencia(dominios['aire'].bonus) }}%(<span contentEditable="true" (blur)="actualizarDominio('aire', 'bonus', $event)">{{ dominios['aire'].bonus }}</span>)</div>
+    </div>
+  </div>
+
+  <!-- Botón para modificar características -->
+  <div class="button-container">
+    <button class="modify-button" (click)="editarSeccion('stats')">
+      <span class="button-icon">📝</span> Modificar las características
+    </button>
+  </div>
+
+  <!-- Combate -->
+  <div class="section-title">
+    <h3>Combate</h3>
+  </div>
+
+  <div class="combat-stats-grid">
+    <!-- Primera columna -->
+    <div class="combat-stat">
+      <span class="combat-icon">⚔️</span>
+      <span class="combat-label">Daños finales</span>
+      <span class="combat-value" [ngClass]="getClaseValor(combate['danosFinal'].valor)" contentEditable="true" (blur)="actualizarCombate('danosFinal', $event)">{{ combate['danosFinal'].valor }}%</span>
+    </div>
+    
+    <div class="combat-stat">
+      <span class="combat-icon">🗡️</span>
+      <span class="combat-label">Golpe crítico</span>
+      <span class="combat-value" [ngClass]="getClaseValor(combate['golpeCritico'].valor)" contentEditable="true" (blur)="actualizarCombate('golpeCritico', $event)">{{ combate['golpeCritico'].valor }}%</span>
+    </div>
+    
+    <div class="combat-stat">
+      <span class="combat-icon">⚡</span>
+      <span class="combat-label">Iniciativa</span>
+      <span class="combat-value" [ngClass]="getClaseValor(combate['iniciativa'].valor)" contentEditable="true" (blur)="actualizarCombate('iniciativa', $event)">{{ combate['iniciativa'].valor }}</span>
+    </div>
+    
+    <div class="combat-stat">
+      <span class="combat-icon">🦶</span>
+      <span class="combat-label">Esquiva</span>
+      <span class="combat-value" [ngClass]="getClaseValor(combate['esquiva'].valor)" contentEditable="true" (blur)="actualizarCombate('esquiva', $event)">{{ combate['esquiva'].valor }}</span>
+    </div>
+    
+    <div class="combat-stat">
+      <span class="combat-icon">📚</span>
+      <span class="combat-label">Sabiduría</span>
+      <span class="combat-value" [ngClass]="getClaseValor(combate['sabiduria'].valor)" contentEditable="true" (blur)="actualizarCombate('sabiduria', $event)">{{ combate['sabiduria'].valor }}</span>
+    </div>
+    
+    <div class="combat-stat">
+      <span class="combat-icon">🧠</span>
+      <span class="combat-label">Control</span>
+      <span class="combat-value" [ngClass]="getClaseValor(combate['control'].valor)" contentEditable="true" (blur)="actualizarCombate('control', $event)">{{ combate['control'].valor }}</span>
+    </div>
+    
+    <!-- Segunda columna -->
+    <div class="combat-stat">
+      <span class="combat-icon">➕</span>
+      <span class="combat-label">Curas finales</span>
+      <span class="combat-value" [ngClass]="getClaseValor(combate['curasFinal'].valor)" contentEditable="true" (blur)="actualizarCombate('curasFinal', $event)">{{ combate['curasFinal'].valor }}%</span>
+    </div>
+    
+    <div class="combat-stat">
+      <span class="combat-icon">👁️</span>
+      <span class="combat-label">Anticipación</span>
+      <span class="combat-value" [ngClass]="getClaseValor(combate['anticipacion'].valor)" contentEditable="true" (blur)="actualizarCombate('anticipacion', $event)">{{ combate['anticipacion'].valor }}%</span>
+    </div>
+    
+    <div class="combat-stat">
+      <span class="combat-icon">📏</span>
+      <span class="combat-label">Alcance</span>
+      <span class="combat-value" [ngClass]="getClaseValor(combate['alcance'].valor)" contentEditable="true" (blur)="actualizarCombate('alcance', $event)">{{ combate['alcance'].valor }}</span>
+    </div>
+    
+    <div class="combat-stat">
+      <span class="combat-icon">🛡️</span>
+      <span class="combat-label">Placaje</span>
+      <span class="combat-value" [ngClass]="getClaseValor(combate['placaje'].valor)" contentEditable="true" (blur)="actualizarCombate('placaje', $event)">{{ combate['placaje'].valor }}</span>
+    </div>
+    
+    <div class="combat-stat">
+      <span class="combat-icon">🔍</span>
+      <span class="combat-label">Prospección</span>
+      <span class="combat-value" [ngClass]="getClaseValor(combate['prospeccion'].valor)" contentEditable="true" (blur)="actualizarCombate('prospeccion', $event)">{{ combate['prospeccion'].valor }}</span>
+    </div>
+    
+    <div class="combat-stat">
+      <span class="combat-icon">💪</span>
+      <span class="combat-label">Voluntad</span>
+      <span class="combat-value" [ngClass]="getClaseValor(combate['voluntad'].valor)" contentEditable="true" (blur)="actualizarCombate('voluntad', $event)">{{ combate['voluntad'].valor }}</span>
+    </div>
+  </div>
+
+  <!-- Secundario -->
+  <div class="section-title">
+    <h3>Secundario</h3>
+  </div>
+
+  <div class="secondary-stats-grid">
+    <!-- Primera columna -->
+    <div class="secondary-stat">
+      <span class="secondary-icon">🎯</span>
+      <span class="secondary-label">Dominio crítico</span>
+      <span class="secondary-value" [ngClass]="getClaseValor(secundario['dominioCritico'].valor)" contentEditable="true" (blur)="actualizarSecundario('dominioCritico', $event)">{{ secundario['dominioCritico'].valor }}</span>
+    </div>
+    
+    <div class="secondary-stat">
+      <span class="secondary-icon">🔄</span>
+      <span class="secondary-label">Dominio espalda</span>
+      <span class="secondary-value" [ngClass]="getClaseValor(secundario['dominioEspalda'].valor)" contentEditable="true" (blur)="actualizarSecundario('dominioEspalda', $event)">{{ secundario['dominioEspalda'].valor }}</span>
+    </div>
+    
+    <div class="secondary-stat">
+      <span class="secondary-icon">🤜</span>
+      <span class="secondary-label">Dominio de melé</span>
+      <span class="secondary-value" [ngClass]="getClaseValor(secundario['dominioMele'].valor)" contentEditable="true" (blur)="actualizarSecundario('dominioMele', $event)">{{ secundario['dominioMele'].valor }}</span>
+    </div>
+    
+    <div class="secondary-stat">
+      <span class="secondary-icon">🏹</span>
+      <span class="secondary-label">Dominio distancia</span>
+      <span class="secondary-value" [ngClass]="getClaseValor(secundario['dominioDistancia'].valor)" contentEditable="true" (blur)="actualizarSecundario('dominioDistancia', $event)">{{ secundario['dominioDistancia'].valor }}</span>
+    </div>
+    
+    <div class="secondary-stat">
+      <span class="secondary-icon">💉</span>
+      <span class="secondary-label">Dominio cura</span>
+      <span class="secondary-value" [ngClass]="getClaseValor(secundario['dominioCura'].valor)" contentEditable="true" (blur)="actualizarSecundario('dominioCura', $event)">{{ secundario['dominioCura'].valor }}</span>
+    </div>
+    
+    <div class="secondary-stat">
+      <span class="secondary-icon">🔴</span>
+      <span class="secondary-label">Dominio berserker</span>
+      <span class="secondary-value" [ngClass]="getClaseValor(secundario['dominioBerserker'].valor)" contentEditable="true" (blur)="actualizarSecundario('dominioBerserker', $event)">{{ secundario['dominioBerserker'].valor }}</span>
+    </div>
+    
+    <!-- Segunda columna -->
+    <div class="secondary-stat">
+      <span class="secondary-icon">🛡️</span>
+      <span class="secondary-label">Resistencia crítica</span>
+      <span class="secondary-value" [ngClass]="getClaseValor(secundario['resistenciaCritica'].valor)" contentEditable="true" (blur)="actualizarSecundario('resistenciaCritica', $event)">{{ secundario['resistenciaCritica'].valor }}</span>
+    </div>
+    
+    <div class="secondary-stat">
+      <span class="secondary-icon">🔙</span>
+      <span class="secondary-label">Resistencia por la espalda</span>
+      <span class="secondary-value" [ngClass]="getClaseValor(secundario['resistenciaEspalda'].valor)" contentEditable="true" (blur)="actualizarSecundario('resistenciaEspalda', $event)">{{ secundario['resistenciaEspalda'].valor }}</span>
+    </div>
+    
+    <div class="secondary-stat">
+      <span class="secondary-icon">🛡️</span>
+      <span class="secondary-label">Armadura dada</span>
+      <span class="secondary-value" [ngClass]="getClaseValor(secundario['armaduraDada'].valor)" contentEditable="true" (blur)="actualizarSecundario('armaduraDada', $event)">{{ secundario['armaduraDada'].valor }}%</span>
+    </div>
+    
+    <div class="secondary-stat">
+      <span class="secondary-icon">🛡️</span>
+      <span class="secondary-label">Armadura recibida</span>
+      <span class="secondary-value" [ngClass]="getClaseValor(secundario['armaduraRecibida'].valor)" contentEditable="true" (blur)="actualizarSecundario('armaduraRecibida', $event)">{{ secundario['armaduraRecibida'].valor }}%</span>
+    </div>
+    
+    <div class="secondary-stat">
+      <span class="secondary-icon">☠️</span>
+      <span class="secondary-label">Daños indirectos</span>
+      <span class="secondary-value" [ngClass]="getClaseValor(secundario['danosIndirectos'].valor)" contentEditable="true" (blur)="actualizarSecundario('danosIndirectos', $event)">{{ secundario['danosIndirectos'].valor }}%</span>
+    </div>
+  </div>
+</div>

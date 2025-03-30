@@ -1,1 +1,13 @@
-<router-outlet></router-outlet>
+<div class="app-container">
+  <nav class="navbar">
+    <div class="navbar-brand">Wakfu Calculator</div>
+    <ul class="navbar-menu">
+      <li class="navbar-item"><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a></li>
+      <li class="navbar-item"><a routerLink="/damage" routerLinkActive="active">Damage Calculator</a></li>
+    </ul>
+  </nav>
+  
+  <div class="content">
+    <router-outlet></router-outlet>
+  </div>
+</div>

@@ -1,0 +1,167 @@
+<div class="wakfu-spell-card">
+  <!-- Contenido principal organizado en tres columnas -->
+  <div class="spell-content-wrapper">
+    <!-- Columna 1: Efectos -->
+    <div class="spell-column effects-column">
+      <!-- Effects content -->
+      <div class="spell-effects">
+        <h4 class="section-title">Effects</h4>
+        <div class="effects-container">
+          <div class="effect-row" *ngFor="let effect of effects; let i = index">
+            <div class="effect-domain">
+              <select [(ngModel)]="effect.domain" (change)="cambiarDominio(i, effect.domain)">
+                <option *ngFor="let domain of availableDomains" [value]="domain">{{ domain }}</option>
+              </select>
+            </div>
+            <div class="effect-damage">
+              <span contentEditable="true" (blur)="actualizarDanioBase(i, $event)">{{ effect.baseDamage }}</span>
+              <span class="damage-separator">➜</span>
+              <span class="calculated-damage" [ngClass]="{
+                'fire-damage': effect.domain === 'fire',
+                'water-damage': effect.domain === 'water',
+                'air-damage': effect.domain === 'air',
+                'earth-damage': effect.domain === 'earth',
+                'healing-damage': effect.domain === 'healing'
+              }">{{ effect.calculatedDamage }}</span>
+            </div>
+            <div class="remove-button" (click)="eliminarEfecto(i)" *ngIf="effects.length > 1">✕</div>
+          </div>
+        </div>
+        <button (click)="agregarEfecto()" class="add-effect-button">+ Add effect</button>
+      </div>
+
+      <!-- Daños adicionales -->
+      <div class="additional-damages">
+        <h4 class="section-title">Daños Adicionales</h4>
+        <div class="additional-stats-container">
+          <div class="stats-column">
+            <div class="stat-row">
+              <label>Daño Infligido: </label>
+              <input type="number" min="0" [(ngModel)]="additionalStats.danioInfligido" (change)="calculateDamage()">%
+            </div>
+          </div>
+          <div class="stats-column">
+            <div class="stat-row">
+              <label>Daño Indirecto: </label>
+              <input type="number" min="0" [(ngModel)]="additionalStats.danioIndirecto" (change)="calculateDamage()">%
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Columna 2: Dominios y subdominios -->
+    <div class="spell-column domains-column">
+      <!-- Domain levels -->
+      <div class="dominio-levels">
+        <h4 class="section-title">Domains</h4>
+        <div class="domains-container">
+          <div class="dominio-slider-container" *ngFor="let domain of availableDomains">
+            <div class="domain-level-row">
+              <div class="domain-icon" [ngClass]="domain + '-icon'">{{ domain.charAt(0).toUpperCase() }}</div>
+              <label>{{ domain }}: </label>
+              <input type="number" min="0" max="999" [ngModel]="domainLevels[domain]" 
+                   (ngModelChange)="actualizarDomainLevel(domain, $event)" class="domain-level-input">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Additional character stats -->
+      <div class="additional-stats">
+        <h4 class="section-title">Sub Domains</h4>
+        <div class="additional-stats-container">
+          <div class="stats-column">
+            <div class="stat-row">
+              <label>Dominio Crítico: </label>
+              <input type="number" min="0" [(ngModel)]="additionalStats.dominioCritico" (change)="calculateDamage()">
+            </div>
+            <div class="stat-row">
+              <label>Dominio Mele: </label>
+              <input type="number" min="0" [(ngModel)]="additionalStats.dominioMele" (change)="calculateDamage()">
+            </div>
+          </div>
+          <div class="stats-column">
+            <div class="stat-row">
+              <label>Dominio Espalda: </label>
+              <input type="number" min="0" [(ngModel)]="additionalStats.dominioEspalda" (change)="calculateDamage()">
+            </div>
+            <div class="stat-row">
+              <label>Dominio Distancia: </label>
+              <input type="number" min="0" [(ngModel)]="additionalStats.dominioDistancia" (change)="calculateDamage()">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Columna 3: Resistencias y opciones -->
+    <div class="spell-column options-column">
+      <!-- Enemy stats -->
+      <div class="enemy-stats">
+        <h4 class="section-title">Enemy Resistances</h4>
+        <div class="resistance-container">
+          <div class="resistance-row" *ngFor="let domain of availableDomains">
+            <ng-container *ngIf="domain !== 'healing'">
+              <div class="domain-icon" [ngClass]="domain + '-icon'">{{ domain.charAt(0).toUpperCase() }}</div>
+              <label>{{ domain }}: </label>
+              <div class="resistance-input">
+                <input type="number" min="0" max="1500" 
+                      [ngModel]="obtenerResistenciaEnemigo(domain)"
+                      (ngModelChange)="actualizarResistenciaEnemigo(domain, $event)">
+                <span class="resistance-value" [ngClass]="domain + '-text'">
+                  {{ obtenerPorcentajeResistencia(obtenerResistenciaEnemigo(domain)) | number:'1.0-0' }}%
+                </span>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+
+      <!-- Options for damage calculation -->
+      <div class="damage-calculator-options">
+        <h4 class="section-title">Calculation Options</h4>
+        
+        <div class="option-group">
+          <label>Attack Position:</label>
+          <select [(ngModel)]="attackPosition" (change)="cambiarPosicionAtaque(attackPosition)">
+            <option value="frente">Front</option>
+            <option value="lado">Side</option>
+            <option value="espalda">Back</option>
+          </select>
+        </div>
+        
+        <div class="option-group">
+          <label>Distance:</label>
+          <select [(ngModel)]="distanceType" (change)="cambiarTipoDistancia(distanceType)">
+            <option value="mele">Melee</option>
+            <option value="distancia">Distance</option>
+          </select>
+        </div>
+        
+        <div class="checkbox-group">
+          <div class="checkbox-item">
+            <input type="checkbox" id="critico" [checked]="isCritical" (change)="toggleGolpeCritico()">
+            <label for="critico">Critical</label>
+          </div>
+          
+          <div class="checkbox-item">
+            <input type="checkbox" id="berserker" [checked]="isBerserker" (change)="toggleModoBerserker()">
+            <label for="berserker">Berserker</label>
+          </div>
+          
+          <div class="checkbox-item">
+            <input type="checkbox" id="espalda" [checked]="isBackAttack" (change)="toggleAtaqueEspalda()">
+            <label for="espalda">Back Attack</label>
+          </div>
+          
+          <div class="checkbox-item">
+            <input type="checkbox" id="indirecto" [checked]="isIndirect" (change)="toggleEsIndirecto()">
+            <label for="indirecto">Indirect</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
