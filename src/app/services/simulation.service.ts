@@ -7,6 +7,7 @@ export type DomainType = 'fire' | 'water' | 'air' | 'earth' | 'healing';
 // Interfaz para efectos
 export interface Effect {
   domain: string;
+  name: string;
   baseDamage: number;
   critBaseDamage: number;
   usesCritDomain: boolean;
@@ -93,8 +94,8 @@ export class SimulationService {
       id: this.generateId(),
       name: 'Default Simulation',
       effects: [
-        { domain: 'fire', baseDamage: 10, critBaseDamage: 0, usesCritDomain: false, calculatedDamage: 12, calculatedCritDamage: 15 },
-        { domain: 'water', baseDamage: 8, critBaseDamage: 0, usesCritDomain: false, calculatedDamage: 10, calculatedCritDamage: 12 }
+        { domain: 'fire', name: 'Fire Spell', baseDamage: 10, critBaseDamage: 0, usesCritDomain: false, calculatedDamage: 12, calculatedCritDamage: 15 },
+        { domain: 'water', name: 'Water Spell', baseDamage: 8, critBaseDamage: 0, usesCritDomain: false, calculatedDamage: 10, calculatedCritDamage: 12 }
       ],
       domainLevels: {
         fire: 100,
@@ -170,7 +171,7 @@ export class SimulationService {
         id: this.generateId(),
         name: name,
         effects: [
-          { domain: 'fire', baseDamage: 10, critBaseDamage: 0, usesCritDomain: false, calculatedDamage: 12, calculatedCritDamage: 15 }
+          { domain: 'fire', name: 'Fire Spell', baseDamage: 10, critBaseDamage: 0, usesCritDomain: false, calculatedDamage: 12, calculatedCritDamage: 15 }
         ],
         domainLevels: {
           fire: 100,

@@ -252,6 +252,7 @@
         </div>
         <div class="effects-container compact">
           <div class="effect-row mini" *ngFor="let effect of effects; let i = index" [ngClass]="effect.domain">
+            <button class="remove-button mini" (click)="eliminarEfecto(i)" title="Remove spell">×</button>
             <div class="effect-header">
               <div class="select-wrapper mini">
                 <div class="select-icon mini">
@@ -272,7 +273,9 @@
                   <option value="air">Air</option>
                 </select>
               </div>
-              <button class="remove-button mini" (click)="eliminarEfecto(i)">✕</button>
+              <div class="spell-name-field">
+                <input type="text" [(ngModel)]="effect.name" placeholder="Spell name" class="spell-name-input" (change)="saveCurrentSimulation()">
+              </div>
             </div>
             
             <div class="effect-damages mini">

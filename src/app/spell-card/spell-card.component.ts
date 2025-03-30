@@ -205,6 +205,7 @@ export class SpellCardComponent implements OnInit, OnDestroy {
   agregarEfecto(): void {
     this.effects.push({ 
       domain: this.availableDomains[0], 
+      name: `Spell ${this.effects.length + 1}`,
       baseDamage: 0,
       critBaseDamage: 0,
       usesCritDomain: false,
