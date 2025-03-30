@@ -8,7 +8,10 @@ export type DomainType = 'fire' | 'water' | 'air' | 'earth' | 'healing';
 export interface Effect {
   domain: string;
   baseDamage: number;
+  critBaseDamage: number;
+  usesCritDomain: boolean;
   calculatedDamage: number;
+  calculatedCritDamage: number;
 }
 
 // Interfaz para estadísticas enemigas
@@ -27,6 +30,7 @@ export interface AdditionalStats {
   dominioDistancia: number;
   danioInfligido: number;
   danioIndirecto: number;
+  danioCriticoInfligido: number;
 }
 
 // Interfaz para una simulación
@@ -85,8 +89,8 @@ export class SimulationService {
       id: this.generateId(),
       name: 'Default Simulation',
       effects: [
-        { domain: 'fire', baseDamage: 10, calculatedDamage: 12 },
-        { domain: 'water', baseDamage: 8, calculatedDamage: 10 }
+        { domain: 'fire', baseDamage: 10, critBaseDamage: 0, usesCritDomain: false, calculatedDamage: 12, calculatedCritDamage: 15 },
+        { domain: 'water', baseDamage: 8, critBaseDamage: 0, usesCritDomain: false, calculatedDamage: 10, calculatedCritDamage: 12 }
       ],
       domainLevels: {
         fire: 100,
@@ -107,7 +111,8 @@ export class SimulationService {
         dominioEspalda: 0,
         dominioDistancia: 0,
         danioInfligido: 0,
-        danioIndirecto: 0
+        danioIndirecto: 0,
+        danioCriticoInfligido: 0
       },
       attackPosition: 'frente',
       distanceType: 'mele',
@@ -157,7 +162,7 @@ export class SimulationService {
         id: this.generateId(),
         name: name,
         effects: [
-          { domain: 'fire', baseDamage: 10, calculatedDamage: 12 }
+          { domain: 'fire', baseDamage: 10, critBaseDamage: 0, usesCritDomain: false, calculatedDamage: 12, calculatedCritDamage: 15 }
         ],
         domainLevels: {
           fire: 100,
@@ -178,7 +183,8 @@ export class SimulationService {
           dominioEspalda: 0,
           dominioDistancia: 0,
           danioInfligido: 0,
-          danioIndirecto: 0
+          danioIndirecto: 0,
+          danioCriticoInfligido: 0
         },
         attackPosition: 'frente',
         distanceType: 'mele',

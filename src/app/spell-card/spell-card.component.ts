@@ -51,7 +51,8 @@ export class SpellCardComponent implements OnInit, OnDestroy {
     dominioEspalda: 0,
     dominioDistancia: 0,
     danioInfligido: 0,
-    danioIndirecto: 0
+    danioIndirecto: 0,
+    danioCriticoInfligido: 0
   };
   
   // Enemy resistance statistics
@@ -178,7 +179,7 @@ export class SpellCardComponent implements OnInit, OnDestroy {
 
   deleteSimulation(id: string, event: Event): void {
     event.stopPropagation();
-    if (confirm('¿Estás seguro de que quieres eliminar esta simulación?')) {
+    if (confirm('Are you sure you want to delete this simulation?')) {
       this.simulationService.deleteSimulation(id);
     }
   }
@@ -190,8 +191,11 @@ export class SpellCardComponent implements OnInit, OnDestroy {
   agregarEfecto(): void {
     this.effects.push({ 
       domain: this.availableDomains[0], 
-      baseDamage: 0, 
-      calculatedDamage: 0 
+      baseDamage: 0,
+      critBaseDamage: 0,
+      usesCritDomain: false,
+      calculatedDamage: 0,
+      calculatedCritDamage: 0
     });
     this.calculateDamage();
     this.saveCurrentSimulation();
@@ -268,70 +272,151 @@ export class SpellCardComponent implements OnInit, OnDestroy {
     // Calculate damage for each effect
     this.effects.forEach(effect => {
       const domain = effect.domain as DomainType;
-      const baseDamage = effect.baseDamage || 0;
       
-      // Obtenemos el dominio elemental según el tipo de daño
-      const elementalDomain = this.domainLevels[domain] || 0;
+      // Calculate normal damage first
+      this.calculateNormalDamage(effect, domain);
       
-      // Obtenemos los subdominios aplicables
-      let subDomains = 0;
-      
-      // Aplicar bonificación según la distancia
-      if (this.distanceType === 'distancia') {
-        const distBonus = this.additionalStats.dominioDistancia || 0;
-        subDomains += isNaN(distBonus) ? 0 : distBonus;
-      } else {
-        const meleBonus = this.additionalStats.dominioMele || 0;
-        subDomains += isNaN(meleBonus) ? 0 : meleBonus;
-      }
-      
-      // Aplicar bonificación de crítico si corresponde
-      if (this.isCritical) {
-        const critBonus = this.additionalStats.dominioCritico || 0;
-        subDomains += isNaN(critBonus) ? 0 : critBonus;
-      }
-      
-      // Aplicar bonificación de espalda si corresponde
-      if (this.attackPosition === 'espalda') {
-        const backBonus = this.additionalStats.dominioEspalda || 0;
-        subDomains += isNaN(backBonus) ? 0 : backBonus;
-      }
-      
-      // Calculamos el dominio total
-      const totalDomain = elementalDomain + subDomains;
-      
-      // Calculamos el daño incrementado
-      let increasedDamage = this.additionalStats.danioInfligido || 0;
-      if (this.isIndirect) {
-        const indirectBonus = this.additionalStats.danioIndirecto || 0;
-        increasedDamage += isNaN(indirectBonus) ? 0 : indirectBonus;
-      }
-      // Convertimos el porcentaje a multiplicador (ej: 30% -> 1.3)
-      const damageMultiplier = 1 + (increasedDamage / 100);
-      
-      // Cálculo inicial con dominio total
-      let calculatedDamage = baseDamage + (baseDamage * (totalDomain / 100));
-      
-      // Aplicamos el multiplicador de daño
-      calculatedDamage *= damageMultiplier;
-      
-      // Aplicamos el multiplicador de posición solo si no es indirecto
-      if (this.attackPosition === 'lado') {
-        calculatedDamage *= 1.1;
-      } else if (this.attackPosition === 'espalda') {
-        calculatedDamage *= 1.25;
-      }
-    
-      // Aplicamos la reducción por resistencia
-      const resistance = this.obtenerResistenciaEnemigo(domain);
-      const resistanceReduction = 1 - (this.obtenerPorcentajeResistencia(resistance) / 100);
-      calculatedDamage *= resistanceReduction;
-      
-      // Redondeamos al entero más cercano
-      effect.calculatedDamage = Math.round(calculatedDamage);
+      // Calculate critical damage if critical is enabled
+      this.calculateCriticalDamage(effect, domain);
     });
     
     this.saveCurrentSimulation();
+  }
+  
+  // Calcular el daño normal (no crítico)
+  calculateNormalDamage(effect: Effect, domain: DomainType): void {
+    const baseDamage = effect.baseDamage || 0;
+    
+    // Obtenemos el dominio elemental según el tipo de daño
+    const elementalDomain = this.domainLevels[domain] || 0;
+    
+    // Obtenemos los subdominios aplicables
+    let subDomains = 0;
+    
+    // Aplicar bonificación según la distancia
+    if (this.distanceType === 'distancia') {
+      const distBonus = this.additionalStats.dominioDistancia || 0;
+      subDomains += isNaN(distBonus) ? 0 : distBonus;
+    } else {
+      const meleBonus = this.additionalStats.dominioMele || 0;
+      subDomains += isNaN(meleBonus) ? 0 : meleBonus;
+    }
+    
+    // Aplicar bonificación de espalda si corresponde
+    if (this.attackPosition === 'espalda') {
+      const backBonus = this.additionalStats.dominioEspalda || 0;
+      subDomains += isNaN(backBonus) ? 0 : backBonus;
+    }
+    
+    // Calculamos el dominio total
+    const totalDomain = elementalDomain + subDomains;
+    
+    // Calculamos el daño incrementado
+    let increasedDamage = this.additionalStats.danioInfligido || 0;
+    
+    // Si es ataque indirecto, añadir bonificación de daño indirecto
+    if (this.isIndirect) {
+      const indirectBonus = this.additionalStats.danioIndirecto || 0;
+      increasedDamage += isNaN(indirectBonus) ? 0 : indirectBonus;
+    }
+    
+    // Convertimos el porcentaje a multiplicador (ej: 30% -> 1.3)
+    const damageMultiplier = 1 + (increasedDamage / 100);
+    
+    // Cálculo inicial con dominio total
+    let calculatedDamage = baseDamage + (baseDamage * (totalDomain / 100));
+    
+    // Aplicamos el multiplicador de daño
+    calculatedDamage *= damageMultiplier;
+    
+    // Aplicamos el multiplicador de posición
+    if (this.attackPosition === 'lado') {
+      calculatedDamage *= 1.1;
+    } else if (this.attackPosition === 'espalda') {
+      calculatedDamage *= 1.25;
+    }
+    
+    // Aplicamos la reducción por resistencia
+    const resistance = this.obtenerResistenciaEnemigo(domain);
+    const resistanceReduction = 1 - (this.obtenerPorcentajeResistencia(resistance) / 100);
+    calculatedDamage *= resistanceReduction;
+    
+    // Redondeamos al entero más cercano
+    effect.calculatedDamage = Math.round(calculatedDamage);
+  }
+  
+  // Calcular el daño crítico
+  calculateCriticalDamage(effect: Effect, domain: DomainType): void {
+    const critBaseDamage = effect.critBaseDamage || effect.baseDamage || 0;
+    
+    // Obtenemos el dominio elemental según el tipo de daño
+    const elementalDomain = this.domainLevels[domain] || 0;
+    
+    // Obtenemos los subdominios aplicables
+    let subDomains = 0;
+    
+    // Aplicar bonificación según la distancia
+    if (this.distanceType === 'distancia') {
+      const distBonus = this.additionalStats.dominioDistancia || 0;
+      subDomains += isNaN(distBonus) ? 0 : distBonus;
+    } else {
+      const meleBonus = this.additionalStats.dominioMele || 0;
+      subDomains += isNaN(meleBonus) ? 0 : meleBonus;
+    }
+    
+    // Aplicar bonificación de crítico si corresponde (solo si usesCritDomain es true)
+    if (effect.usesCritDomain) {
+      const critBonus = this.additionalStats.dominioCritico || 0;
+      subDomains += isNaN(critBonus) ? 0 : critBonus;
+    }
+    
+    // Aplicar bonificación de espalda si corresponde
+    if (this.attackPosition === 'espalda') {
+      const backBonus = this.additionalStats.dominioEspalda || 0;
+      subDomains += isNaN(backBonus) ? 0 : backBonus;
+    }
+    
+    // Calculamos el dominio total
+    const totalDomain = elementalDomain + subDomains;
+    
+    // Calculamos el daño incrementado
+    let increasedDamage = this.additionalStats.danioInfligido || 0;
+    
+    // Si es ataque indirecto, añadir bonificación de daño indirecto
+    if (this.isIndirect) {
+      const indirectBonus = this.additionalStats.danioIndirecto || 0;
+      increasedDamage += isNaN(indirectBonus) ? 0 : indirectBonus;
+    }
+    
+    // Añadir bonificación de daño crítico solo si usesCritDomain está activado
+    if (effect.usesCritDomain) {
+      const critDamageBonus = this.additionalStats.danioCriticoInfligido || 0;
+      increasedDamage += isNaN(critDamageBonus) ? 0 : critDamageBonus;
+    }
+    
+    // Convertimos el porcentaje a multiplicador (ej: 30% -> 1.3)
+    const damageMultiplier = 1 + (increasedDamage / 100);
+    
+    // Cálculo inicial con dominio total
+    let calculatedDamage = critBaseDamage + (critBaseDamage * (totalDomain / 100));
+    
+    // Aplicamos el multiplicador de daño
+    calculatedDamage *= damageMultiplier;
+    
+    // Aplicamos el multiplicador de posición
+    if (this.attackPosition === 'lado') {
+      calculatedDamage *= 1.1;
+    } else if (this.attackPosition === 'espalda') {
+      calculatedDamage *= 1.25;
+    }
+    
+    // Aplicamos la reducción por resistencia
+    const resistance = this.obtenerResistenciaEnemigo(domain);
+    const resistanceReduction = 1 - (this.obtenerPorcentajeResistencia(resistance) / 100);
+    calculatedDamage *= resistanceReduction;
+    
+    // Redondeamos al entero más cercano
+    effect.calculatedCritDamage = Math.round(calculatedDamage);
   }
   
   // Actualizar nivel de dominio en la interfaz
@@ -416,21 +501,21 @@ export class SpellCardComponent implements OnInit, OnDestroy {
     this.saveCurrentSimulation();
   }
   
-  // Toggle para el golpe crítico
+  // Toggle for critical strike
   toggleGolpeCritico(): void {
     this.isCritical = !this.isCritical;
     this.calculateDamage();
     this.saveCurrentSimulation();
   }
   
-  // Toggle para el modo berserker
+  // Toggle for berserker mode
   toggleModoBerserker(): void {
     this.isBerserker = !this.isBerserker;
     this.calculateDamage();
     this.saveCurrentSimulation();
   }
   
-  // Toggle para el ataque indirecto
+  // Toggle for indirect attack
   toggleEsIndirecto(): void {
     this.isIndirect = !this.isIndirect;
     this.calculateDamage();
@@ -476,5 +561,21 @@ export class SpellCardComponent implements OnInit, OnDestroy {
   cerrarFicha(): void {
     // Could handle closing the component here
     console.log('Closing spell card...');
+  }
+
+  // Add this method to toggle the Critical Domain flag for a spell
+  toggleSpellCritDomain(index: number): void {
+    if (this.effects[index]) {
+      this.effects[index].usesCritDomain = !this.effects[index].usesCritDomain;
+      this.calculateDamage();
+      this.saveCurrentSimulation();
+    }
+  }
+
+  // Toggle para alternar entre Melee y Distance
+  toggleDistanceType(): void {
+    this.distanceType = this.distanceType === 'mele' ? 'distancia' : 'mele';
+    this.calculateDamage();
+    this.saveCurrentSimulation();
   }
 }

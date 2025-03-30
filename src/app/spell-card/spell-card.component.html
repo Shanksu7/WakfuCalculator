@@ -45,40 +45,56 @@
       
       <!-- Effects content -->
       <div class="spell-effects">
-        <h4 class="section-title">Effects</h4>
+        <h4 class="section-title">Spells</h4>
         <div class="effects-container">
           <div class="effect-row" *ngFor="let effect of effects; let i = index">
-            <div class="effect-domain">
+            <div class="effect-domain-centered">
               <select [(ngModel)]="effect.domain" (change)="cambiarDominio(i, effect.domain)">
                 <option *ngFor="let domain of availableDomains" [value]="domain">{{ domain }}</option>
               </select>
             </div>
-            <div class="effect-damage">
-              <span>Base:</span>
-              <input type="number" [(ngModel)]="effect.baseDamage" (change)="calculateDamage()" min="0" />
-              <span class="calculated-damage">{{ effect.calculatedDamage }}</span>
+            <div class="effect-damages">
+              <!-- Damage Normal -->
+              <div class="damage-field">
+                <span>Base:</span>
+                <input type="number" [(ngModel)]="effect.baseDamage" (change)="calculateDamage()" min="0" />
+                <span class="calculated-damage">{{ effect.calculatedDamage }}</span>
+              </div>
+              
+              <!-- Damage Critical -->
+              <div class="damage-field">
+                <span>Critical:</span>
+                <input type="number" [(ngModel)]="effect.critBaseDamage" (change)="calculateDamage()" min="0" />
+                <div class="mini-toggle" [class.active]="effect.usesCritDomain" (click)="toggleSpellCritDomain(i)" title="Click to enable/disable the use of Critical Domain">CD</div>
+                <span class="calculated-damage">{{ effect.calculatedCritDamage }}</span>
+              </div>
             </div>
             <button class="remove-button" (click)="eliminarEfecto(i)">✕</button>
           </div>
         </div>
-        <button (click)="agregarEfecto()" class="add-effect-button">+ Add Effect</button>
+        <button (click)="agregarEfecto()" class="add-effect-button">+ Add Spell</button>
       </div>
 
       <!-- Daños adicionales -->
       <div class="additional-damages">
         <h4 class="section-title">Additional Damage</h4>
-        <div class="additional-stats-container">
-          <div class="stats-column">
-            <div class="stat-row">
-              <label>Damage Inflicted: </label>
-              <input type="number" min="0" [(ngModel)]="additionalStats.danioInfligido" (change)="calculateDamage()">%
-            </div>
+        <div class="damage-stats-container">
+          <div class="stat-row">
+            <label>Damage Inflicted: </label>
+            <input type="number" min="0" [(ngModel)]="additionalStats.danioInfligido" (change)="calculateDamage()">%
           </div>
-          <div class="stats-column">
-            <div class="stat-row">
+          <div class="stat-row indirect-container" [class.active]="isIndirect">
+            <div class="indirect-header">
               <label>Indirect Damage: </label>
-              <input type="number" min="0" [(ngModel)]="additionalStats.danioIndirecto" (change)="calculateDamage()">%
+              <div class="toggle-switch small" [class.active]="isIndirect" (click)="toggleEsIndirecto()">
+                <div class="toggle-indicator" [class.active]="isIndirect"></div>
+              </div>
             </div>
+            <input type="number" min="0" [(ngModel)]="additionalStats.danioIndirecto" (change)="calculateDamage()" [disabled]="!isIndirect">%
+          </div>
+          <div class="stat-row">
+            <label>Critical Damage Inflicted: </label>
+            <input type="number" min="0" [(ngModel)]="additionalStats.danioCriticoInfligido" (change)="calculateDamage()">%
           </div>
         </div>
       </div>
@@ -110,19 +126,32 @@
               <label>Critical Domain: </label>
               <input type="number" min="0" [(ngModel)]="additionalStats.dominioCritico" (change)="calculateDamage()">
             </div>
-            <div class="stat-row">
-              <label>Melee Domain: </label>
-              <input type="number" min="0" [(ngModel)]="additionalStats.dominioMele" (change)="calculateDamage()">
+            <div class="stat-row distance-group">
+              <div class="distance-type-selector">
+                <div class="distance-slider-labels compact">
+                  <span class="distance-label" [class.active]="distanceType === 'mele'" (click)="distanceType = 'mele'; cambiarTipoDistancia('mele')" title="Selecciona para ataques cuerpo a cuerpo">Melee</span>
+                  <div class="distance-slider-track compact" (click)="toggleDistanceType()" title="Cambia entre ataques a distancia y cuerpo a cuerpo">
+                    <div class="distance-slider-thumb" [style.left]="distanceType === 'mele' ? '0%' : '100%'"></div>
+                  </div>
+                  <span class="distance-label" [class.active]="distanceType === 'distancia'" (click)="distanceType = 'distancia'; cambiarTipoDistancia('distancia')" title="Selecciona para ataques a distancia">Distance</span>
+                </div>
+              </div>
+              <div class="grouped-domains">
+                <div class="domain-item" [class.disabled]="distanceType !== 'mele'">
+                  <label>Melee Domain: </label>
+                  <input type="number" min="0" [(ngModel)]="additionalStats.dominioMele" (change)="calculateDamage()" [disabled]="distanceType !== 'mele'">
+                </div>
+                <div class="domain-item" [class.disabled]="distanceType !== 'distancia'">
+                  <label>Distance Domain: </label>
+                  <input type="number" min="0" [(ngModel)]="additionalStats.dominioDistancia" (change)="calculateDamage()" [disabled]="distanceType !== 'distancia'">
+                </div>
+              </div>
             </div>
           </div>
           <div class="stats-column">
             <div class="stat-row">
               <label>Back Domain: </label>
               <input type="number" min="0" [(ngModel)]="additionalStats.dominioEspalda" (change)="calculateDamage()">
-            </div>
-            <div class="stat-row">
-              <label>Distance Domain: </label>
-              <input type="number" min="0" [(ngModel)]="additionalStats.dominioDistancia" (change)="calculateDamage()">
             </div>
           </div>
         </div>
@@ -163,30 +192,6 @@
             <option value="lado">Side</option>
             <option value="espalda">Back</option>
           </select>
-        </div>
-        
-        <div class="option-group">
-          <label>Distance:</label>
-          <select [(ngModel)]="distanceType" (change)="cambiarTipoDistancia(distanceType)">
-            <option value="mele">Melee</option>
-            <option value="distancia">Distance</option>
-          </select>
-        </div>
-        
-        <div class="checkbox-group">
-          <div class="toggle-item" [class.active]="isCritical" (click)="toggleGolpeCritico()">
-            <div class="toggle-switch">
-              <div class="toggle-indicator"></div>
-            </div>
-            <div class="toggle-label">Critical Hit</div>
-          </div>
-          
-          <div class="toggle-item" [class.active]="isIndirect" (click)="toggleEsIndirecto()">
-            <div class="toggle-switch">
-              <div class="toggle-indicator"></div>
-            </div>
-            <div class="toggle-label">Indirect</div>
-          </div>
         </div>
       </div>
     </div>
