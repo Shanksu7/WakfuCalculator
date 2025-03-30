@@ -25,7 +25,7 @@ export class SpellCardComponent implements OnInit, OnDestroy {
   
   // Available domains
   availableDomains: DomainType[] = [
-    'fire', 'water', 'air', 'earth', 'healing'
+    'fire', 'water', 'air', 'earth'
   ];
   
   // Options for damage calculation
@@ -103,6 +103,9 @@ export class SpellCardComponent implements OnInit, OnDestroy {
         }
       })
     );
+
+    // Eliminar hechizos con dominio healing de efectos existentes
+    this.effects = this.effects.filter(effect => effect.domain !== 'healing');
   }
 
   ngOnDestroy(): void {

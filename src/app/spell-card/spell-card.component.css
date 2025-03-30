@@ -1,3 +1,7 @@
+:root {
+  --accent-color-rgb: 0, 150, 255;
+}
+
 /* Añadir estilos de header wakfu al principio del archivo */
 .header-wakfu {
   background-color: var(--header-background);
@@ -2084,5 +2088,658 @@ input[type="checkbox"] {
   font-size: 12px;
   font-weight: 500;
   text-transform: uppercase;
+}
+
+/* Estilos para el layout compacto */
+.spell-content-wrapper.compact {
+  display: grid;
+  grid-template-columns: 60% 40%;
+  gap: 12px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.spell-column {
+  background-color: var(--background-secondary);
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.primary-column {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.secondary-column {
+  display: flex;
+  flex-direction: column;
+  max-height: 100vh;
+  overflow-y: auto;
+}
+
+/* Top Controls */
+.top-controls {
+  margin-bottom: 8px;
+}
+
+.controls-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Warning Mini */
+.formula-warning.mini {
+  display: flex;
+  align-items: center;
+  background-color: rgba(255, 200, 0, 0.2);
+  border-radius: 4px;
+  padding: 4px 8px;
+  gap: 5px;
+  flex: 1;
+  font-size: 11px;
+}
+
+.warning-icon {
+  font-size: 14px;
+}
+
+/* Domain and Resistance Grid */
+.domain-resistance-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 10px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.domains-section, .resistances-section, .subdomains-section {
+  background-color: var(--background-tertiary);
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.domains-section:hover, .resistances-section:hover, .subdomains-section:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.domains-grid, .resistance-grid, .subdomain-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  margin-top: 10px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.domain-level-row.mini, .resistance-row.mini, .stat-row.mini {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px;
+  background-color: rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.domain-level-row.mini:hover, .resistance-row.mini:hover, .stat-row.mini:hover {
+  background-color: rgba(0, 0, 0, 0.25);
+}
+
+.domain-level-input.mini, .resistance-input.mini, .subdomain-input.mini, .element-input.mini{
+  width: 100%;
+  min-width: 80px;
+  padding: 4px 6px;
+  font-size: 12px;
+  border-radius: 4px;
+  background-color: var(--number-input-bg);
+  border: 1px solid var(--border-color);
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.domain-level-input.mini:focus, .resistance-input.mini:focus, .subdomain-input.mini:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px rgba(var(--accent-color-rgb), 0.25);
+  outline: none;
+}
+
+/* Section headers */
+.section-header.mini {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.section-title.mini {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0;
+  color: var(--accent-color);
+  padding-left: 5px;
+  border-left: 2px solid var(--accent-color);
+}
+
+.toggle-section-btn.mini {
+  padding: 2px;
+  width: 22px;
+  height: 22px;
+  font-size: 12px;
+}
+
+/* Spells section */
+.spells-section.compact {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.effects-container.compact {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+  max-height: calc(100vh - 120px);
+  padding-right: 5px;
+}
+
+.effects-container.compact::-webkit-scrollbar {
+  width: 6px;
+}
+
+.effects-container.compact::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
+}
+
+.effects-container.compact::-webkit-scrollbar-thumb {
+  background: var(--accent-color);
+  border-radius: 3px;
+}
+
+.effect-row.mini {
+  flex-direction: column;
+  padding: 10px;
+  gap: 8px;
+  transition: all 0.2s ease;
+  border: 1px solid var(--border-color);
+}
+
+.effect-row.mini:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+}
+
+.effect-header {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.select-wrapper.mini {
+  height: 28px;
+  width: 120px;
+  min-width: 120px;
+  overflow: visible;
+  position: relative;
+  border-radius: 4px;
+}
+
+.select-icon.mini {
+  width: 24px;
+  height: 24px;
+  left: 4px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.domain-select.mini {
+  width: 120px;
+  min-width: 120px;
+  padding: 4px 26px 4px 32px;
+  font-size: 13px;
+  height: 28px;
+  box-sizing: border-box;
+  background-color: var(--background-primary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  border-radius: 4px;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.domain-select.mini:hover {
+  border-color: var(--accent-color);
+}
+
+.domain-select.mini:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px rgba(var(--accent-color-rgb), 0.25);
+}
+
+.effect-row.mini:hover .domain-select.mini {
+  background-color: var(--background-secondary);
+}
+
+.element-emoji.mini {
+  font-size: 14px;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+}
+
+/* Opción seleccionada */
+option {
+  background-color: var(--background-tertiary);
+  color: var(--text-primary);
+  padding: 8px;
+}
+
+/* Colores especiales para cada elemento */
+.fire .element-emoji.mini {
+  background-color: rgba(255, 100, 0, 0.3);
+  box-shadow: 0 0 5px rgba(255, 100, 0, 0.5);
+}
+
+.water .element-emoji.mini {
+  background-color: rgba(0, 150, 255, 0.3);
+  box-shadow: 0 0 5px rgba(0, 150, 255, 0.5);
+}
+
+.earth .element-emoji.mini {
+  background-color: rgba(100, 180, 0, 0.3);
+  box-shadow: 0 0 5px rgba(100, 180, 0, 0.5);
+}
+
+.air .element-emoji.mini {
+  background-color: rgba(180, 140, 255, 0.3);
+  box-shadow: 0 0 5px rgba(180, 140, 255, 0.5);
+}
+
+.healing .element-emoji.mini {
+  background-color: rgba(244, 67, 54, 0.3);
+  box-shadow: 0 0 5px rgba(244, 67, 54, 0.5);
+}
+
+/* Estilo para los input que están dentro de un contenedor de daño indirecto activo */
+.indirect-container.active input {
+  border-color: var(--accent-color);
+  background-color: rgba(var(--accent-color-rgb), 0.1);
+  width: 45px;
+  min-width: 45px;
+}
+
+/* Mover slider de melee-distance a subdominios y ajustar estilo de disabled */
+.subdomains-section .distance-type-selector.compact-selector {
+  margin-bottom: 15px;
+  padding: 8px;
+  background-color: rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.domain-item.disabled {
+  opacity: 0.4;
+  pointer-events: none;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-left: none;
+}
+
+.domain-item.disabled input {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+/* Header de efectos mejorado */
+.effect-header {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.select-wrapper.mini .element-emoji.mini {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+}
+
+.effect-damages.mini {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+}
+
+.damage-field.mini {
+  padding: 4px 6px;
+}
+
+.damage-field.mini span {
+  font-size: 12px;
+  min-width: 40px;
+}
+
+.damage-input.mini {
+  width: 60px;
+  padding: 2px 4px;
+  font-size: 12px;
+}
+
+.calculated-damage.mini {
+  font-size: 14px;
+}
+
+.add-effect-button.mini {
+  padding: 3px;
+  font-size: 16px;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: auto;
+}
+
+.remove-button.mini {
+  width: 20px;
+  height: 20px;
+  font-size: 12px;
+}
+
+/* Toggle switch */
+.mini-toggle {
+  width: 22px;
+  height: 22px;
+  font-size: 11px;
+}
+
+.domain-icon.mini {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+}
+
+/* Position buttons */
+.position-button.mini {
+  padding: 4px;
+  height: auto;
+  flex-direction: row;
+  align-items: center;
+  gap: 3px;
+}
+
+.position-icon {
+  font-size: 14px;
+  margin: 0;
+}
+
+.position-label {
+  font-size: 11px;
+}
+
+/* Distance selector */
+.distance-type-selector.compact-selector {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.distance-label.mini {
+  font-size: 12px;
+}
+
+.distance-slider-track.mini {
+  width: 40px;
+  height: 16px;
+}
+
+.stat-row.mini.disabled {
+  opacity: 0.6;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.stat-row.mini.disabled input {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-color: transparent;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.subdomain-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+/* Ajustar el padding general */
+.spell-column {
+  padding: 12px;
+}
+
+/* Ajustar margen entre secciones */
+.domains-section, .resistances-section, .subdomains-section,
+.damage-bonuses-section, .additional-damages.mini-section, 
+.element-damages.mini-section, .spells-section.compact {
+  margin-bottom: 10px;
+}
+
+/* Mejorar la visualización del valor de resistencia */
+.resistance-value.mini {
+  font-size: 10px;
+  right: 4px;
+  top: 3px;
+  z-index: 2;
+  font-weight: bold;
+  text-shadow: 0 0 3px rgba(0, 0, 0, 0.9);
+  color: white;
+}
+/*
+.damage-bonus-input.mini, .element-input.mini {
+  width: 45px;
+  min-width: 45px;
+  padding: 2px 5px;
+  font-size: 12px;
+  border-radius: 3px;
+  background-color: var(--number-input-bg);
+  border: 1px solid var(--border-color);
+}
+*/
+.damage-bonuses-section.compact {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0;
+}
+
+.additional-damages.mini-section, .element-damages.mini-section {
+  background-color: var(--background-tertiary);
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.additional-damages.mini-section:hover, .element-damages.mini-section:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.damage-stats-container.compact, .element-damages-grid.compact {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  margin-top: 10px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.element-damage-row.mini {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px;
+  background-color: rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.element-damage-row.mini:hover {
+  background-color: rgba(0, 0, 0, 0.25);
+}
+
+.element-icon.mini {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+}
+
+/* Mejorar botón de agregar hechizo */
+.add-effect-button.mini {
+  background-color: #8B4513;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 3px 8px;
+  height: 24px;
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.add-effect-button.mini:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+  background-color: #A0522D;
+}
+
+.section-header.mini .add-effect-button.mini {
+  margin: 0;
+  width: 24px;
+  height: 24px;
+  font-size: 16px;
+}
+
+.warning-text {
+  line-height: 1.2;
+}
+
+/* Resistencias sin barra de progreso */
+.resistance-value-plain {
+  font-weight: bold;
+  font-size: 13px;
+  margin-left: 8px;
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+}
+
+.fire-text {
+  color: #ff6400;
+}
+
+.water-text {
+  color: #0096ff;
+}
+
+.earth-text {
+  color: #64b400;
+}
+
+.air-text {
+  color: #b4dcff;
+}
+
+/* Subdominios en dos columnas */
+.subdomain-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.subdomain-columns {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 5px;
+}
+
+.subdomain-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dist-domain-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 5px;
+}
+
+/* Botón de Add Spell con estilo similar a ingredients +/- */
+.add-spell-button {
+  background-color: var(--button-primary);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 6px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.add-spell-button:hover {
+  background-color: #A0522D;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
 }
 
