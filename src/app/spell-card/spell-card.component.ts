@@ -1,52 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-
-interface Effect {
-  domain: string;
-  baseDamage: number;
-  calculatedDamage: number;
-}
-
-// Available domain types
-type DomainType = 'fire' | 'water' | 'air' | 'earth' | 'healing';
-
-// Interface for enemy statistics
-interface EnemyStats {
-  fireResistance: number;
-  waterResistance: number;
-  airResistance: number;
-  earthResistance: number;
-}
-
-// Interface for additional character statistics
-interface AdditionalStats {
-  dominioCritico: number;
-  dominioMele: number;
-  dominioEspalda: number;
-  dominioDistancia: number;
-  danioInfligido: number;
-  danioIndirecto: number;
-}
-
-// Interface for saved state
-interface SavedState {
-  effects: Effect[];
-  domainLevels: Record<DomainType, number>;
-  enemyStats: EnemyStats;
-  additionalStats: AdditionalStats;
-  attackPosition: string;
-  distanceType: string;
-  isCritical: boolean;
-  isBerserker: boolean;
-  isIndirect: boolean;
-  isBackAttack: boolean;
-}
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { SimulationService, Simulation, Effect, DomainType } from '../services/simulation.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-spell-card',
   templateUrl: './spell-card.component.html',
   styleUrls: ['./spell-card.component.css']
 })
-export class SpellCardComponent implements OnInit {
+export class SpellCardComponent implements OnInit, OnDestroy {
   // Spell properties
   spellName: string = 'Spell Name';
   apCost: number = 3;
@@ -60,10 +21,7 @@ export class SpellCardComponent implements OnInit {
   activeTab: string = 'efectos'; // 'efectos', 'enemigo'
   
   // Spell effects
-  effects: Effect[] = [
-    { domain: 'fire', baseDamage: 10, calculatedDamage: 12 },
-    { domain: 'water', baseDamage: 8, calculatedDamage: 10 }
-  ];
+  effects: Effect[] = [];
   
   // Available domains
   availableDomains: DomainType[] = [
@@ -88,7 +46,7 @@ export class SpellCardComponent implements OnInit {
   };
   
   // Additional character statistics
-  additionalStats: AdditionalStats = {
+  additionalStats = {
     dominioCritico: 0,
     dominioMele: 0,
     dominioEspalda: 0,
@@ -98,7 +56,7 @@ export class SpellCardComponent implements OnInit {
   };
   
   // Enemy resistance statistics
-  enemyStats: EnemyStats = {
+  enemyStats = {
     fireResistance: 0,
     waterResistance: 0,
     airResistance: 0,
@@ -107,62 +65,127 @@ export class SpellCardComponent implements OnInit {
   
   // Spell level
   spellLevel: number = 100;
+
+  // Simulaciones
+  simulations: Simulation[] = [];
+  currentSimulationId: string | null = null;
+  isEditingTabName = false;
+  newTabName = '';
+
+  // Control de diálogo
+  showNewSimulationDialog = false;
+  newSimulationName = '';
+
+  private subscriptions: Subscription[] = [];
   
-  constructor() { }
+  constructor(private simulationService: SimulationService) { }
 
   ngOnInit(): void {
-    this.loadFromLocalStorage();
-    this.calculateDamage();
+    this.subscriptions.push(
+      this.simulationService.simulations$.subscribe(simulations => {
+        this.simulations = simulations;
+      }),
+
+      this.simulationService.currentSimulationId$.subscribe(id => {
+        this.currentSimulationId = id;
+        if (id) {
+          this.loadCurrentSimulation();
+        }
+      })
+    );
   }
 
-  // Load data from localStorage
-  loadFromLocalStorage(): void {
-    const savedData = localStorage.getItem('wakfu-calculator-state');
-    if (savedData) {
-      try {
-        const parsedData: SavedState = JSON.parse(savedData);
-        
-        if (parsedData.effects) this.effects = parsedData.effects;
-        if (parsedData.domainLevels) this.domainLevels = parsedData.domainLevels;
-        if (parsedData.enemyStats) {
-          this.enemyStats = {
-            fireResistance: parsedData.enemyStats.fireResistance || 0,
-            waterResistance: parsedData.enemyStats.waterResistance || 0,
-            airResistance: parsedData.enemyStats.airResistance || 0,
-            earthResistance: parsedData.enemyStats.earthResistance || 0
-          };
-        }
-        if (parsedData.additionalStats) this.additionalStats = parsedData.additionalStats;
-        if (parsedData.attackPosition) this.attackPosition = parsedData.attackPosition;
-        if (parsedData.distanceType) this.distanceType = parsedData.distanceType;
-        if (parsedData.isCritical !== undefined) this.isCritical = parsedData.isCritical;
-        if (parsedData.isBerserker !== undefined) this.isBerserker = parsedData.isBerserker;
-        if (parsedData.isIndirect !== undefined) this.isIndirect = parsedData.isIndirect;
-        if (parsedData.isBackAttack !== undefined) this.isBackAttack = parsedData.isBackAttack;
-      } catch (e) {
-        console.error('Error loading from localStorage:', e);
-      }
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+
+  loadCurrentSimulation(): void {
+    const simulation = this.simulationService.getCurrentSimulation();
+    if (simulation) {
+      this.effects = [...simulation.effects];
+      this.domainLevels = {...simulation.domainLevels};
+      this.enemyStats = {...simulation.enemyStats};
+      this.additionalStats = {...simulation.additionalStats};
+      this.attackPosition = simulation.attackPosition;
+      this.distanceType = simulation.distanceType;
+      this.isCritical = simulation.isCritical;
+      this.isBerserker = simulation.isBerserker;
+      this.isIndirect = simulation.isIndirect;
+      this.isBackAttack = simulation.isBackAttack;
     }
   }
 
-  // Save current state to localStorage
-  saveToLocalStorage(): void {
-    const dataToSave: SavedState = {
-      effects: this.effects,
-      domainLevels: this.domainLevels,
-      enemyStats: this.enemyStats,
-      additionalStats: this.additionalStats,
-      attackPosition: this.attackPosition,
-      distanceType: this.distanceType,
-      isCritical: this.isCritical,
-      isBerserker: this.isBerserker,
-      isIndirect: this.isIndirect,
-      isBackAttack: this.isBackAttack
-    };
+  saveCurrentSimulation(): void {
+    if (!this.currentSimulationId) return;
     
-    localStorage.setItem('wakfu-calculator-state', JSON.stringify(dataToSave));
+    const currentSimulation = this.simulationService.getCurrentSimulation();
+    if (currentSimulation) {
+      const updatedSimulation: Simulation = {
+        ...currentSimulation,
+        effects: [...this.effects],
+        domainLevels: {...this.domainLevels},
+        enemyStats: {...this.enemyStats},
+        additionalStats: {...this.additionalStats},
+        attackPosition: this.attackPosition,
+        distanceType: this.distanceType,
+        isCritical: this.isCritical,
+        isBerserker: this.isBerserker,
+        isIndirect: this.isIndirect,
+        isBackAttack: this.isBackAttack
+      };
+      
+      this.simulationService.updateSimulation(updatedSimulation);
+    }
   }
-  
+
+  // Métodos para gestionar simulaciones
+  selectSimulation(id: string): void {
+    if (id !== this.currentSimulationId) {
+      this.saveCurrentSimulation();
+      this.simulationService.selectSimulation(id);
+    }
+  }
+
+  openNewSimulationDialog(): void {
+    this.showNewSimulationDialog = true;
+    this.newSimulationName = '';
+  }
+
+  createNewSimulation(): void {
+    if (this.newSimulationName.trim()) {
+      this.saveCurrentSimulation();
+      this.simulationService.addSimulation(this.newSimulationName.trim());
+      this.showNewSimulationDialog = false;
+    }
+  }
+
+  cancelNewSimulation(): void {
+    this.showNewSimulationDialog = false;
+  }
+
+  startEditingTabName(simulation: Simulation): void {
+    this.isEditingTabName = true;
+    this.newTabName = simulation.name;
+  }
+
+  saveTabName(simulation: Simulation): void {
+    if (this.newTabName.trim()) {
+      this.simulationService.renameSimulation(simulation.id, this.newTabName.trim());
+    }
+    this.isEditingTabName = false;
+  }
+
+  cancelEditTabName(): void {
+    this.isEditingTabName = false;
+  }
+
+  deleteSimulation(id: string, event: Event): void {
+    event.stopPropagation();
+    if (confirm('¿Estás seguro de que quieres eliminar esta simulación?')) {
+      this.simulationService.deleteSimulation(id);
+    }
+  }
+
   cambiarPestania(tab: string): void {
     this.activeTab = tab;
   }
@@ -174,13 +197,13 @@ export class SpellCardComponent implements OnInit {
       calculatedDamage: 0 
     });
     this.calculateDamage();
-    this.saveToLocalStorage();
+    this.saveCurrentSimulation();
   }
   
   eliminarEfecto(index: number): void {
     this.effects.splice(index, 1);
     this.calculateDamage();
-    this.saveToLocalStorage();
+    this.saveCurrentSimulation();
   }
   
   // Get resistance percentage based on value with better formula
@@ -248,222 +271,249 @@ export class SpellCardComponent implements OnInit {
     // Calculate damage for each effect
     this.effects.forEach(effect => {
       const domain = effect.domain as DomainType;
-      const isHealing = domain === 'healing';
+      const baseDamage = effect.baseDamage || 0;
       
-      // Get base level of main domain
-      let mainDomainLevel = this.domainLevels[domain] || 100;
-      if (isNaN(mainDomainLevel)) mainDomainLevel = 0;
+      // Get resistance reduction
+      const resistance = this.obtenerResistenciaEnemigo(domain);
+      const resistanceReduction = 1 - (this.obtenerPorcentajeResistencia(resistance) / 100);
       
-      // Get secondary domain bonus
-      const secondaryBonus = this.obtenerBonificacionDominioSecundario(domain);
+      // Get primary domain level
+      const domainLevel = this.domainLevels[domain] || 0;
+      const domainMultiplier = domainLevel / 100;
       
-      // Total applicable domain
-      const applicableDomain = mainDomainLevel + secondaryBonus;
+      // Get secondary domain bonuses
+      const secondaryDomainBonus = this.obtenerBonificacionDominioSecundario(domain);
+      const secondaryMultiplier = (domainLevel + secondaryDomainBonus) / 100;
       
-      // First calculation: base damage * (domain/100)
-      const calculationA1 = effect.baseDamage * (applicableDomain / 100);
+      // Apply position multipliers (front: 1.0, side: 1.1, back: 1.25)
+      let positionMultiplier = 1.0;
+      if (this.attackPosition === 'lado' && !this.isIndirect) {
+        positionMultiplier = 1.1;
+      } else if (this.attackPosition === 'espalda' && !this.isIndirect) {
+        positionMultiplier = 1.25;
+      }
       
-      // Get inflicted damage increase
-      const inflictedDamageIncrease = this.obtenerDanioInfligidoAumentado(domain);
+      // Apply back attack checkbox bonus
+      if (this.isBackAttack && !this.isIndirect && this.attackPosition !== 'espalda') {
+        positionMultiplier = 1.25;
+      }
       
-      // Second calculation: (A1 + base damage) * inflicted damage increase
-      const calculationA2 = (calculationA1 + effect.baseDamage) * inflictedDamageIncrease;
+      // Apply critical multiplier (1.25 or 1.0)
+      const criticalMultiplier = this.isCritical ? 1.25 : 1.0;
       
-      // Get enemy resistance (doesn't apply for healing)
-      const baseResistance = isHealing ? 0 : this.obtenerResistenciaEnemigo(domain);
-      const resistancePercentage = isHealing ? 0 : this.obtenerPorcentajeResistencia(baseResistance);
+      // Apply indirect damage flag (no position or distance bonuses if indirect)
       
-      // Final calculation: A2 * ((100 - resistance%) / 100)
-      const result = calculationA2 * ((100 - resistancePercentage) / 100);
+      // Get damage infliction bonuses
+      const damageInflicted = this.obtenerDanioInfligidoAumentado(domain);
       
-      // Update calculated damage
-      effect.calculatedDamage = Math.round(result);
+      // Apply all multipliers to base damage
+      // Base formula: base * domain * position * critical * resistance * damage_inflicted
+      let calculatedDamage = baseDamage;
+      
+      // Apply domain level multiplier (primary or secondary based on flags)
+      calculatedDamage *= this.isCritical || this.attackPosition === 'espalda' || 
+                         this.isBackAttack || this.distanceType !== 'mele' ? 
+                         secondaryMultiplier : domainMultiplier;
+      
+      // Apply position multiplier (if not indirect)
+      calculatedDamage *= positionMultiplier;
+      
+      // Apply critical multiplier
+      calculatedDamage *= criticalMultiplier;
+      
+      // Apply resistance reduction (lower damage based on enemy resistance)
+      calculatedDamage *= resistanceReduction;
+      
+      // Apply damage infliction bonus
+      calculatedDamage *= damageInflicted;
+      
+      // Round to integer
+      effect.calculatedDamage = Math.round(calculatedDamage);
     });
     
-    // Save the state after calculation
-    this.saveToLocalStorage();
+    this.saveCurrentSimulation();
   }
   
+  // Actualizar nivel de dominio en la interfaz
   actualizarDomainLevel(domain: DomainType, value: number): void {
-    // Update the domain level with the input value
     this.domainLevels[domain] = isNaN(value) ? 0 : value;
     this.calculateDamage();
-    this.saveToLocalStorage();
+    this.saveCurrentSimulation();
   }
   
+  // Actualiza el daño base de un efecto
   actualizarDanioBase(index: number, event: any): void {
-    const value = parseInt(event.target.innerText);
-    if (!isNaN(value)) {
-      this.effects[index].baseDamage = value;
-    } else {
-      this.effects[index].baseDamage = 0;
-      event.target.innerText = "0";
+    const value = parseInt(event.target.value);
+    if (this.effects[index]) {
+      this.effects[index].baseDamage = isNaN(value) ? 0 : value;
+      this.calculateDamage();
+      this.saveCurrentSimulation();
     }
-    this.calculateDamage();
-    this.saveToLocalStorage();
   }
   
+  // Actualiza el tipo de dominio de un efecto
   cambiarDominio(index: number, domain: string): void {
-    this.effects[index].domain = domain;
-    this.calculateDamage();
-    this.saveToLocalStorage();
+    if (this.effects[index]) {
+      this.effects[index].domain = domain;
+      this.calculateDamage();
+      this.saveCurrentSimulation();
+    }
   }
   
+  // Update spell name
   actualizarNombre(event: any): void {
-    const value = event.target.innerText;
-    if (value && value.trim() !== '') {
-      this.spellName = value;
-    } else {
-      event.target.innerText = this.spellName;
-    }
-    this.saveToLocalStorage();
+    const value = event.target.value;
+    this.spellName = value;
+    
+    // Could save in localStorage if needed
+    // this.saveToLocalStorage();
   }
   
+  // Actualiza el costo de PA
   actualizarCostoPA(event: any): void {
-    const value = parseInt(event.target.innerText);
-    if (!isNaN(value)) {
-      this.apCost = value;
-      this.saveToLocalStorage();
-    }
+    const value = parseInt(event.target.value);
+    this.apCost = isNaN(value) ? 1 : Math.max(1, value);
+    
+    // Could save in localStorage if needed
+    // this.saveToLocalStorage();
   }
   
+  // Actualiza el rango mínimo
   actualizarRangoMin(event: any): void {
-    const value = parseInt(event.target.innerText);
-    if (!isNaN(value)) {
-      this.minRange = value;
-      this.saveToLocalStorage();
-    }
+    const value = parseInt(event.target.value);
+    this.minRange = isNaN(value) ? 1 : Math.max(1, value);
+    
+    // Could save in localStorage if needed
+    // this.saveToLocalStorage();
   }
   
+  // Actualiza el rango máximo
   actualizarRangoMax(event: any): void {
-    const value = parseInt(event.target.innerText);
-    if (!isNaN(value)) {
-      this.maxRange = value;
-      this.saveToLocalStorage();
-    }
+    const value = parseInt(event.target.value);
+    this.maxRange = isNaN(value) ? 1 : Math.max(this.minRange, value);
+    
+    // Could save in localStorage if needed
+    // this.saveToLocalStorage();
   }
   
+  // Cambia el tipo de alcance
   cambiarTipoAlcance(type: string): void {
     this.rangeType = type;
-    this.saveToLocalStorage();
+    // this.saveToLocalStorage();
   }
   
+  // Cambia la posición de ataque
   cambiarPosicionAtaque(position: string): void {
     this.attackPosition = position;
     
-    // Auto-sync the "back attack" checkbox with the position
+    // Disable back attack checkbox if already attacking from back
     if (position === 'espalda') {
-      this.toggleAtaqueEspalda(true);
-    } else if (this.isBackAttack) {
-      this.toggleAtaqueEspalda(false);
+      this.isBackAttack = false;
     }
     
     this.calculateDamage();
-    this.saveToLocalStorage();
+    this.saveCurrentSimulation();
   }
   
+  // Cambia el tipo de distancia
   cambiarTipoDistancia(type: string): void {
     this.distanceType = type;
     this.calculateDamage();
-    this.saveToLocalStorage();
+    this.saveCurrentSimulation();
   }
   
+  // Toggle para el golpe crítico
   toggleGolpeCritico(force?: boolean): void {
     if (force !== undefined) {
       this.isCritical = force;
     } else {
       this.isCritical = !this.isCritical;
     }
+    
     this.calculateDamage();
-    this.saveToLocalStorage();
+    this.saveCurrentSimulation();
   }
   
+  // Toggle para el modo berserker
   toggleModoBerserker(force?: boolean): void {
     if (force !== undefined) {
       this.isBerserker = force;
     } else {
       this.isBerserker = !this.isBerserker;
     }
+    
     this.calculateDamage();
-    this.saveToLocalStorage();
+    this.saveCurrentSimulation();
   }
   
+  // Toggle para el ataque de espalda
   toggleAtaqueEspalda(force?: boolean): void {
+    // No permitir activar si ya estamos atacando desde la espalda
+    if (this.attackPosition === 'espalda') {
+      this.isBackAttack = false;
+      return;
+    }
+    
     if (force !== undefined) {
       this.isBackAttack = force;
     } else {
       this.isBackAttack = !this.isBackAttack;
-      
-      // Keep position and checkbox in sync
-      if (this.isBackAttack && this.attackPosition !== 'espalda') {
-        this.attackPosition = 'espalda';
-      }
     }
+    
     this.calculateDamage();
-    this.saveToLocalStorage();
+    this.saveCurrentSimulation();
   }
   
+  // Toggle para el ataque indirecto
   toggleEsIndirecto(force?: boolean): void {
     if (force !== undefined) {
       this.isIndirect = force;
     } else {
       this.isIndirect = !this.isIndirect;
     }
+    
     this.calculateDamage();
-    this.saveToLocalStorage();
+    this.saveCurrentSimulation();
   }
   
-  // Update character domain levels
+  // Actualiza un nivel de dominio
   actualizarNivelDominio(domain: DomainType, event: any): void {
-    const value = (event.target as HTMLInputElement).value;
-    this.domainLevels[domain] = parseInt(value);
+    const value = parseInt(event.target.value);
+    this.domainLevels[domain] = isNaN(value) ? 0 : Math.max(0, value);
     this.calculateDamage();
-    this.saveToLocalStorage();
+    this.saveCurrentSimulation();
   }
   
-  // Update enemy resistance
+  // Actualiza la resistencia del enemigo
   actualizarResistenciaEnemigo(type: string, event: any): void {
-    let value: number;
+    const value = parseInt(event);
     
-    if (typeof event === 'object' && event !== null) {
-      // Handling event object from input
-      if (event.target) {
-        value = parseInt(event.target.value || '0');
-      } else {
-        // Direct ngModelChange event
-        value = parseInt(event || '0');
-      }
-    } else {
-      // Direct value
-      value = parseInt(event || '0');
-    }
+    // Ensure value is a number and apply limits
+    const clampedValue = isNaN(value) ? 0 : Math.max(0, Math.min(1500, value));
     
-    // Ensure value is a number
-    if (isNaN(value)) value = 0;
-    
-    // Apply value based on domain
+    // Update the appropriate resistance based on domain type
     switch (type) {
       case 'fire':
-        this.enemyStats.fireResistance = value;
+        this.enemyStats.fireResistance = clampedValue;
         break;
       case 'water':
-        this.enemyStats.waterResistance = value;
+        this.enemyStats.waterResistance = clampedValue;
         break;
       case 'air':
-        this.enemyStats.airResistance = value;
+        this.enemyStats.airResistance = clampedValue;
         break;
       case 'earth':
-        this.enemyStats.earthResistance = value;
+        this.enemyStats.earthResistance = clampedValue;
         break;
     }
     
-    // Calculate damage and save state
     this.calculateDamage();
-    this.saveToLocalStorage();
+    this.saveCurrentSimulation();
   }
   
+  // Method to close the spell card
   cerrarFicha(): void {
-    // Implement logic to close the card (could emit an event)
-    console.log('Close card');
+    // Could handle closing the component here
+    console.log('Closing spell card...');
   }
 }

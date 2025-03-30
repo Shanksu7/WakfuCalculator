@@ -1,4 +1,38 @@
 <div class="wakfu-spell-card">
+  <!-- Pestañas de simulaciones -->
+  <div class="simulations-tabs">
+    <div class="simulation-tab" 
+         *ngFor="let simulation of simulations"
+         [class.active]="simulation.id === currentSimulationId"
+         (click)="selectSimulation(simulation.id)">
+      <ng-container *ngIf="isEditingTabName && simulation.id === currentSimulationId; else normalTab">
+        <input type="text" [(ngModel)]="newTabName" (blur)="saveTabName(simulation)" (keyup.enter)="saveTabName(simulation)" (keyup.escape)="cancelEditTabName()">
+      </ng-container>
+      <ng-template #normalTab>
+        {{ simulation.name }}
+        <span class="tab-actions" *ngIf="simulation.id === currentSimulationId">
+          <button class="edit-tab" (click)="startEditingTabName(simulation)" title="Rename">✎</button>
+          <button class="delete-tab" (click)="deleteSimulation(simulation.id, $event)" title="Delete" *ngIf="simulations.length > 1">✕</button>
+        </span>
+      </ng-template>
+    </div>
+    <div class="add-simulation-tab" (click)="openNewSimulationDialog()">
+      <span>+</span>
+    </div>
+  </div>
+
+  <!-- Diálogo para nueva simulación -->
+  <div class="new-simulation-dialog" *ngIf="showNewSimulationDialog">
+    <div class="dialog-content">
+      <h3>Create New Simulation</h3>
+      <input type="text" [(ngModel)]="newSimulationName" placeholder="Simulation name" autofocus>
+      <div class="dialog-actions">
+        <button (click)="cancelNewSimulation()">Cancel</button>
+        <button (click)="createNewSimulation()" [disabled]="!newSimulationName.trim()">Create</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Contenido principal organizado en tres columnas -->
   <div class="spell-content-wrapper">
     <!-- Columna 1: Efectos -->

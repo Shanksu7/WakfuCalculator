@@ -968,3 +968,192 @@ input[type="checkbox"] {
   padding-bottom: 8px;
 }
 
+/* Estilos para las pestañas de simulaciones */
+.simulations-tabs {
+  display: flex;
+  overflow-x: auto;
+  background-color: var(--background-tertiary);
+  border-bottom: 1px solid var(--border-color);
+  padding: 0;
+  margin: 0;
+  height: 40px;
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.simulations-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.simulation-tab {
+  padding: 10px 15px;
+  margin: 0;
+  border-right: 1px solid var(--border-color);
+  cursor: pointer;
+  white-space: nowrap;
+  color: var(--text-secondary);
+  transition: background-color 0.2s ease;
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-width: 120px;
+  max-width: 180px;
+  height: 100%;
+}
+
+.simulation-tab.active {
+  background-color: var(--tab-active);
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.simulation-tab:hover:not(.active) {
+  background-color: var(--card-active);
+}
+
+.tab-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 6px;
+  opacity: 0.4;
+  transition: opacity 0.2s ease;
+}
+
+.simulation-tab:hover .tab-actions {
+  opacity: 1;
+}
+
+.edit-tab, .delete-tab {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 2px;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.edit-tab:hover {
+  color: var(--accent-color);
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.delete-tab:hover {
+  color: #ff6b6b;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.add-simulation-tab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  background-color: var(--background-tertiary);
+  color: var(--text-secondary);
+  cursor: pointer;
+  border-left: 1px solid var(--border-color);
+  font-size: 18px;
+  transition: all 0.2s ease;
+}
+
+.add-simulation-tab:hover {
+  background-color: var(--card-active);
+  color: var(--accent-color);
+}
+
+.simulation-tab input {
+  width: 90%;
+  background-color: var(--background-primary);
+  border: 1px solid var(--accent-color);
+  color: var(--text-primary);
+  padding: 4px 8px;
+  border-radius: 4px;
+  outline: none;
+}
+
+/* Diálogo para nueva simulación */
+.new-simulation-dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.dialog-content {
+  background-color: var(--background-primary);
+  border-radius: 8px;
+  padding: 25px;
+  width: 350px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+.dialog-content h3 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: var(--header-color);
+  text-align: center;
+}
+
+.dialog-content input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  background-color: var(--background-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  color: var(--text-primary);
+  box-sizing: border-box;
+}
+
+.dialog-content input:focus {
+  border-color: var(--accent-color);
+  outline: none;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.dialog-actions button {
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  border: none;
+  font-weight: 500;
+}
+
+.dialog-actions button:first-child {
+  background-color: var(--background-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+.dialog-actions button:last-child {
+  background-color: var(--button-primary);
+  color: var(--text-primary);
+}
+
+.dialog-actions button:last-child:disabled {
+  background-color: var(--background-tertiary);
+  color: var(--text-secondary);
+  cursor: not-allowed;
+}
+
+.dialog-actions button:hover:not(:disabled) {
+  filter: brightness(1.1);
+}
+
