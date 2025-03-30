@@ -49,9 +49,20 @@
         <div class="effects-container">
           <div class="effect-row" *ngFor="let effect of effects; let i = index">
             <div class="effect-domain-centered">
-              <select [(ngModel)]="effect.domain" (change)="cambiarDominio(i, effect.domain)">
-                <option *ngFor="let domain of availableDomains" [value]="domain">{{ domain }}</option>
-              </select>
+              <div class="select-wrapper">
+                <div class="select-icon">
+                  <span class="element-emoji" [ngClass]="effect.domain">
+                    <ng-container *ngIf="effect.domain === 'fire'">🔥</ng-container>
+                    <ng-container *ngIf="effect.domain === 'water'">💧</ng-container>
+                    <ng-container *ngIf="effect.domain === 'earth'">🌱</ng-container>
+                    <ng-container *ngIf="effect.domain === 'air'">💨</ng-container>
+                    <ng-container *ngIf="effect.domain === 'healing'">❤️</ng-container>
+                  </span>
+                </div>
+                <select [(ngModel)]="effect.domain" (change)="cambiarDominio(i, effect.domain)" class="domain-select">
+                  <option *ngFor="let domain of availableDomains" [value]="domain">{{ domain | titlecase }}</option>
+                </select>
+              </div>
             </div>
             <div class="effect-damages">
               <!-- Damage Normal -->
@@ -77,8 +88,14 @@
 
       <!-- Daños adicionales -->
       <div class="additional-damages">
-        <h4 class="section-title">Additional Damage</h4>
-        <div class="damage-stats-container">
+        <div class="section-header">
+          <h4 class="section-title">Additional Damage</h4>
+          <button class="toggle-section-btn" (click)="toggleAdditionalDamage()">
+            <span *ngIf="showAdditionalDamage">▼</span>
+            <span *ngIf="!showAdditionalDamage">▶</span>
+          </button>
+        </div>
+        <div class="damage-stats-container" *ngIf="showAdditionalDamage">
           <div class="stat-row">
             <label>Damage Inflicted: </label>
             <input type="number" min="0" [(ngModel)]="additionalStats.danioInfligido" (change)="calculateDamage()">%
@@ -98,6 +115,54 @@
           </div>
         </div>
       </div>
+      
+      <!-- Daño por elemento -->
+      <div class="element-damages">
+        <div class="section-header">
+          <h4 class="section-title">% Damage Inflicted by Element</h4>
+          <button class="toggle-section-btn" (click)="toggleElementDamage()">
+            <span *ngIf="showElementDamage">▼</span>
+            <span *ngIf="!showElementDamage">▶</span>
+          </button>
+        </div>
+        <div class="element-damages-grid" *ngIf="showElementDamage">
+          <!-- Fuego -->
+          <div class="element-damage-row">
+            <div class="element-icon fire">
+              <span class="element-emoji">🔥</span>
+              <span class="element-name">Fire</span>
+            </div>
+            <input type="number" min="0" [(ngModel)]="additionalStats.fireElementDamage" (change)="calculateDamage()">%
+          </div>
+          
+          <!-- Agua -->
+          <div class="element-damage-row">
+            <div class="element-icon water">
+              <span class="element-emoji">💧</span>
+              <span class="element-name">Water</span>
+            </div>
+            <input type="number" min="0" [(ngModel)]="additionalStats.waterElementDamage" (change)="calculateDamage()">%
+          </div>
+          
+          <!-- Tierra -->
+          <div class="element-damage-row">
+            <div class="element-icon earth">
+              <span class="element-emoji">🌱</span>
+              <span class="element-name">Earth</span>
+            </div>
+            <input type="number" min="0" [(ngModel)]="additionalStats.earthElementDamage" (change)="calculateDamage()">%
+          </div>
+          
+          <!-- Aire -->
+          <div class="element-damage-row">
+            <div class="element-icon air">
+              <span class="element-emoji">💨</span>
+              <span class="element-name">Air</span>
+            </div>
+            <input type="number" min="0" [(ngModel)]="additionalStats.airElementDamage" (change)="calculateDamage()">%
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Columna 2: Dominios y subdominios -->
@@ -108,8 +173,16 @@
         <div class="domains-container">
           <div class="dominio-slider-container" *ngFor="let domain of availableDomains">
             <div class="domain-level-row">
-              <div class="domain-icon" [ngClass]="domain + '-icon'">{{ domain.charAt(0).toUpperCase() }}</div>
-              <label>{{ domain }}: </label>
+              <div class="domain-icon" [ngClass]="domain + '-icon'">
+                <span class="element-emoji">
+                  <ng-container *ngIf="domain === 'fire'">🔥</ng-container>
+                  <ng-container *ngIf="domain === 'water'">💧</ng-container>
+                  <ng-container *ngIf="domain === 'earth'">🌱</ng-container>
+                  <ng-container *ngIf="domain === 'air'">💨</ng-container>
+                  <ng-container *ngIf="domain === 'healing'">❤️</ng-container>
+                </span>
+              </div>
+              <label>{{ domain | titlecase }} Domain: </label>
               <input type="number" min="0" max="999" [ngModel]="domainLevels[domain]" 
                    (ngModelChange)="actualizarDomainLevel(domain, $event)" class="domain-level-input">
             </div>
@@ -162,19 +235,37 @@
     <div class="spell-column options-column">
       <!-- Enemy stats -->
       <div class="enemy-stats">
-        <h4 class="section-title">Enemy Resistances</h4>
-        <div class="resistance-container">
+        <div class="section-header">
+          <h4 class="section-title">Enemy Resistances</h4>
+          <button class="toggle-section-btn" (click)="toggleEnemyResistances()">
+            <span *ngIf="showEnemyResistances">▼</span>
+            <span *ngIf="!showEnemyResistances">▶</span>
+          </button>
+        </div>
+        <div class="resistance-container" *ngIf="showEnemyResistances">
           <div class="resistance-row" *ngFor="let domain of availableDomains">
             <ng-container *ngIf="domain !== 'healing'">
-              <div class="domain-icon" [ngClass]="domain + '-icon'">{{ domain.charAt(0).toUpperCase() }}</div>
-              <label>{{ domain }}: </label>
+              <div class="domain-icon" [ngClass]="domain + '-icon'">
+                <span class="element-emoji">
+                  <ng-container *ngIf="domain === 'fire'">🔥</ng-container>
+                  <ng-container *ngIf="domain === 'water'">💧</ng-container>
+                  <ng-container *ngIf="domain === 'earth'">🌱</ng-container>
+                  <ng-container *ngIf="domain === 'air'">💨</ng-container>
+                </span>
+              </div>
+              <label>{{ domain | titlecase }} Resistance: </label>
               <div class="resistance-input">
                 <input type="number" min="0" max="1500" 
                       [ngModel]="obtenerResistenciaEnemigo(domain)"
                       (ngModelChange)="actualizarResistenciaEnemigo(domain, $event)">
-                <span class="resistance-value" [ngClass]="domain + '-text'">
-                  {{ obtenerPorcentajeResistencia(obtenerResistenciaEnemigo(domain)) | number:'1.0-0' }}%
-                </span>
+                <div class="resistance-bar">
+                  <div class="resistance-progress" 
+                       [style.width.%]="obtenerPorcentajeResistencia(obtenerResistenciaEnemigo(domain))"
+                       [ngClass]="domain + '-bg'"></div>
+                  <span class="resistance-value" [ngClass]="domain + '-text'">
+                    {{ obtenerPorcentajeResistencia(obtenerResistenciaEnemigo(domain)) | number:'1.0-0' }}%
+                  </span>
+                </div>
               </div>
             </ng-container>
           </div>
@@ -183,15 +274,38 @@
 
       <!-- Options for damage calculation -->
       <div class="damage-calculator-options">
-        <h4 class="section-title">Calculation Options</h4>
+        <div class="section-header">
+          <h4 class="section-title">Calculation Options</h4>
+          <button class="toggle-section-btn" (click)="toggleCalculationOptions()">
+            <span *ngIf="showCalculationOptions">▼</span>
+            <span *ngIf="!showCalculationOptions">▶</span>
+          </button>
+        </div>
         
-        <div class="option-group">
-          <label>Attack Position:</label>
-          <select [(ngModel)]="attackPosition" (change)="cambiarPosicionAtaque(attackPosition)">
-            <option value="frente">Front</option>
-            <option value="lado">Side</option>
-            <option value="espalda">Back</option>
-          </select>
+        <div class="options-container" *ngIf="showCalculationOptions">
+          <div class="option-group attack-position-group">
+            <label>Attack Position:</label>
+            <div class="position-options">
+              <button class="position-button" 
+                      [class.active]="attackPosition === 'frente'"
+                      (click)="cambiarPosicionAtaque('frente')">
+                <span class="position-icon">⬆️</span>
+                <span class="position-label">Front</span>
+              </button>
+              <button class="position-button" 
+                      [class.active]="attackPosition === 'lado'"
+                      (click)="cambiarPosicionAtaque('lado')">
+                <span class="position-icon">➡️</span>
+                <span class="position-label">Side</span>
+              </button>
+              <button class="position-button" 
+                      [class.active]="attackPosition === 'espalda'"
+                      (click)="cambiarPosicionAtaque('espalda')">
+                <span class="position-icon">⬇️</span>
+                <span class="position-label">Back</span>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

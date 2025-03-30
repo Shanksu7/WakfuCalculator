@@ -18,7 +18,7 @@ export class SpellCardComponent implements OnInit, OnDestroy {
   rangeType: string = 'normal'; // 'normal', 'linea', 'area', 'multi'
   
   // Tabs
-  activeTab: string = 'efectos'; // 'efectos', 'enemigo'
+  activeTab: string = 'damageCalculator';
   
   // Spell effects
   effects: Effect[] = [];
@@ -52,7 +52,11 @@ export class SpellCardComponent implements OnInit, OnDestroy {
     dominioDistancia: 0,
     danioInfligido: 0,
     danioIndirecto: 0,
-    danioCriticoInfligido: 0
+    danioCriticoInfligido: 0,
+    fireElementDamage: 0,
+    waterElementDamage: 0,
+    earthElementDamage: 0,
+    airElementDamage: 0
   };
   
   // Enemy resistance statistics
@@ -75,6 +79,12 @@ export class SpellCardComponent implements OnInit, OnDestroy {
   // Control de diálogo
   showNewSimulationDialog = false;
   newSimulationName = '';
+
+  // Collapsible sections
+  showAdditionalDamage: boolean = true;
+  showElementDamage: boolean = true;
+  showEnemyResistances: boolean = true;
+  showCalculationOptions: boolean = true;
 
   private subscriptions: Subscription[] = [];
   
@@ -256,8 +266,24 @@ export class SpellCardComponent implements OnInit, OnDestroy {
   
   // Get increased inflicted damage
   obtenerDanioInfligidoAumentado(domain: DomainType): number {
+    // Base damage inflicted
     let damageIncrease = this.additionalStats.danioInfligido || 0;
     if (isNaN(damageIncrease)) damageIncrease = 0;
+    
+    // Add element-specific damage bonus
+    if (domain === 'fire') {
+      const fireDamage = this.additionalStats.fireElementDamage || 0;
+      damageIncrease += isNaN(fireDamage) ? 0 : fireDamage;
+    } else if (domain === 'water') {
+      const waterDamage = this.additionalStats.waterElementDamage || 0;
+      damageIncrease += isNaN(waterDamage) ? 0 : waterDamage;
+    } else if (domain === 'earth') {
+      const earthDamage = this.additionalStats.earthElementDamage || 0;
+      damageIncrease += isNaN(earthDamage) ? 0 : earthDamage;
+    } else if (domain === 'air') {
+      const airDamage = this.additionalStats.airElementDamage || 0;
+      damageIncrease += isNaN(airDamage) ? 0 : airDamage;
+    }
     
     // Add indirect damage bonus if applicable
     if (this.isIndirect) {
@@ -311,20 +337,11 @@ export class SpellCardComponent implements OnInit, OnDestroy {
     // Calculamos el dominio total
     const totalDomain = elementalDomain + subDomains;
     
-    // Calculamos el daño incrementado
-    let increasedDamage = this.additionalStats.danioInfligido || 0;
-    
-    // Si es ataque indirecto, añadir bonificación de daño indirecto
-    if (this.isIndirect) {
-      const indirectBonus = this.additionalStats.danioIndirecto || 0;
-      increasedDamage += isNaN(indirectBonus) ? 0 : indirectBonus;
-    }
-    
-    // Convertimos el porcentaje a multiplicador (ej: 30% -> 1.3)
-    const damageMultiplier = 1 + (increasedDamage / 100);
-    
     // Cálculo inicial con dominio total
     let calculatedDamage = baseDamage + (baseDamage * (totalDomain / 100));
+    
+    // Obtenemos el multiplicador de daño (incluyendo daño elemental específico)
+    const damageMultiplier = this.obtenerDanioInfligidoAumentado(domain);
     
     // Aplicamos el multiplicador de daño
     calculatedDamage *= damageMultiplier;
@@ -379,26 +396,17 @@ export class SpellCardComponent implements OnInit, OnDestroy {
     // Calculamos el dominio total
     const totalDomain = elementalDomain + subDomains;
     
-    // Calculamos el daño incrementado
-    let increasedDamage = this.additionalStats.danioInfligido || 0;
+    // Cálculo inicial con dominio total
+    let calculatedDamage = critBaseDamage + (critBaseDamage * (totalDomain / 100));
     
-    // Si es ataque indirecto, añadir bonificación de daño indirecto
-    if (this.isIndirect) {
-      const indirectBonus = this.additionalStats.danioIndirecto || 0;
-      increasedDamage += isNaN(indirectBonus) ? 0 : indirectBonus;
-    }
+    // Obtenemos el multiplicador de daño (incluyendo daño elemental específico)
+    let damageMultiplier = this.obtenerDanioInfligidoAumentado(domain);
     
     // Añadir bonificación de daño crítico solo si usesCritDomain está activado
     if (effect.usesCritDomain) {
       const critDamageBonus = this.additionalStats.danioCriticoInfligido || 0;
-      increasedDamage += isNaN(critDamageBonus) ? 0 : critDamageBonus;
+      damageMultiplier += isNaN(critDamageBonus) ? 0 : (critDamageBonus / 100);
     }
-    
-    // Convertimos el porcentaje a multiplicador (ej: 30% -> 1.3)
-    const damageMultiplier = 1 + (increasedDamage / 100);
-    
-    // Cálculo inicial con dominio total
-    let calculatedDamage = critBaseDamage + (critBaseDamage * (totalDomain / 100));
     
     // Aplicamos el multiplicador de daño
     calculatedDamage *= damageMultiplier;
@@ -577,5 +585,22 @@ export class SpellCardComponent implements OnInit, OnDestroy {
     this.distanceType = this.distanceType === 'mele' ? 'distancia' : 'mele';
     this.calculateDamage();
     this.saveCurrentSimulation();
+  }
+
+  // Toggle visibility of collapsible sections
+  toggleAdditionalDamage(): void {
+    this.showAdditionalDamage = !this.showAdditionalDamage;
+  }
+
+  toggleElementDamage(): void {
+    this.showElementDamage = !this.showElementDamage;
+  }
+  
+  toggleEnemyResistances(): void {
+    this.showEnemyResistances = !this.showEnemyResistances;
+  }
+  
+  toggleCalculationOptions(): void {
+    this.showCalculationOptions = !this.showCalculationOptions;
   }
 }
