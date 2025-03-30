@@ -14,35 +14,29 @@
               </select>
             </div>
             <div class="effect-damage">
-              <span contentEditable="true" (blur)="actualizarDanioBase(i, $event)">{{ effect.baseDamage }}</span>
-              <span class="damage-separator">➜</span>
-              <span class="calculated-damage" [ngClass]="{
-                'fire-damage': effect.domain === 'fire',
-                'water-damage': effect.domain === 'water',
-                'air-damage': effect.domain === 'air',
-                'earth-damage': effect.domain === 'earth',
-                'healing-damage': effect.domain === 'healing'
-              }">{{ effect.calculatedDamage }}</span>
+              <span>Base:</span>
+              <input type="number" [(ngModel)]="effect.baseDamage" (change)="calculateDamage()" min="0" />
+              <span class="calculated-damage">{{ effect.calculatedDamage }}</span>
             </div>
-            <div class="remove-button" (click)="eliminarEfecto(i)" *ngIf="effects.length > 1">✕</div>
+            <button class="remove-button" (click)="eliminarEfecto(i)">✕</button>
           </div>
         </div>
-        <button (click)="agregarEfecto()" class="add-effect-button">+ Add effect</button>
+        <button (click)="agregarEfecto()" class="add-effect-button">+ Add Effect</button>
       </div>
 
       <!-- Daños adicionales -->
       <div class="additional-damages">
-        <h4 class="section-title">Daños Adicionales</h4>
+        <h4 class="section-title">Additional Damage</h4>
         <div class="additional-stats-container">
           <div class="stats-column">
             <div class="stat-row">
-              <label>Daño Infligido: </label>
+              <label>Damage Inflicted: </label>
               <input type="number" min="0" [(ngModel)]="additionalStats.danioInfligido" (change)="calculateDamage()">%
             </div>
           </div>
           <div class="stats-column">
             <div class="stat-row">
-              <label>Daño Indirecto: </label>
+              <label>Indirect Damage: </label>
               <input type="number" min="0" [(ngModel)]="additionalStats.danioIndirecto" (change)="calculateDamage()">%
             </div>
           </div>
@@ -73,21 +67,21 @@
         <div class="additional-stats-container">
           <div class="stats-column">
             <div class="stat-row">
-              <label>Dominio Crítico: </label>
+              <label>Critical Domain: </label>
               <input type="number" min="0" [(ngModel)]="additionalStats.dominioCritico" (change)="calculateDamage()">
             </div>
             <div class="stat-row">
-              <label>Dominio Mele: </label>
+              <label>Melee Domain: </label>
               <input type="number" min="0" [(ngModel)]="additionalStats.dominioMele" (change)="calculateDamage()">
             </div>
           </div>
           <div class="stats-column">
             <div class="stat-row">
-              <label>Dominio Espalda: </label>
+              <label>Back Domain: </label>
               <input type="number" min="0" [(ngModel)]="additionalStats.dominioEspalda" (change)="calculateDamage()">
             </div>
             <div class="stat-row">
-              <label>Dominio Distancia: </label>
+              <label>Distance Domain: </label>
               <input type="number" min="0" [(ngModel)]="additionalStats.dominioDistancia" (change)="calculateDamage()">
             </div>
           </div>
@@ -141,22 +135,17 @@
         
         <div class="checkbox-group">
           <div class="checkbox-item">
-            <input type="checkbox" id="critico" [checked]="isCritical" (change)="toggleGolpeCritico()">
-            <label for="critico">Critical</label>
+            <input type="checkbox" id="backAttack" [(ngModel)]="isBackAttack" [disabled]="attackPosition === 'espalda'" (change)="toggleAtaqueEspalda()">
+            <label for="backAttack">Back Attack</label>
           </div>
           
           <div class="checkbox-item">
-            <input type="checkbox" id="berserker" [checked]="isBerserker" (change)="toggleModoBerserker()">
-            <label for="berserker">Berserker</label>
+            <input type="checkbox" id="criticalHit" [(ngModel)]="isCritical" (change)="toggleGolpeCritico()">
+            <label for="criticalHit">Critical Hit</label>
           </div>
           
           <div class="checkbox-item">
-            <input type="checkbox" id="espalda" [checked]="isBackAttack" (change)="toggleAtaqueEspalda()">
-            <label for="espalda">Back Attack</label>
-          </div>
-          
-          <div class="checkbox-item">
-            <input type="checkbox" id="indirecto" [checked]="isIndirect" (change)="toggleEsIndirecto()">
+            <input type="checkbox" id="indirecto" [(ngModel)]="isIndirect" (change)="toggleEsIndirecto()">
             <label for="indirecto">Indirect</label>
           </div>
         </div>

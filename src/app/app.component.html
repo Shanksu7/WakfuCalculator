@@ -3,7 +3,14 @@
     <div class="navbar-brand">Wakfu Calculator</div>
     <ul class="navbar-menu">
       <li class="navbar-item"><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a></li>
+      <li class="navbar-item"><a routerLink="/jobs" routerLinkActive="active">Job Calculator</a></li>
       <li class="navbar-item"><a routerLink="/damage" routerLinkActive="active">Damage Calculator</a></li>
+      <li class="navbar-item theme-toggle-wrapper">
+        <button class="theme-toggle" (click)="toggleTheme()">
+          <span *ngIf="isLightTheme">🌙</span>
+          <span *ngIf="!isLightTheme">☀️</span>
+        </button>
+      </li>
     </ul>
   </nav>
   

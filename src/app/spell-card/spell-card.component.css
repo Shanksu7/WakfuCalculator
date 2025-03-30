@@ -1,62 +1,77 @@
+/* Añadir estilos de header wakfu al principio del archivo */
+.header-wakfu {
+  background-color: var(--header-background);
+  color: var(--header-color);
+  border-radius: 6px 6px 0 0;
+  padding: 12px 15px;
+  margin: -15px -15px 15px -15px;
+  text-align: center;
+  font-weight: bold;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
 /* Estilos para la ficha de hechizo de Wakfu */
 .wakfu-spell-card {
-  font-family: 'Arial', sans-serif;
-  background: #2a2a2a;
+  font-family: 'Trebuchet MS', Arial, sans-serif;
+  background: var(--background-secondary);
   border-radius: 10px;
-  color: #e0e0e0;
+  color: var(--text-primary);
   width: 100%;
   max-width: 1300px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.7);
   margin: 20px auto;
   position: relative;
   overflow: hidden;
+  border: 1px solid var(--border-color);
 }
 
 /* Encabezado de la carta */
 .spell-header {
-  background: linear-gradient(to right, #3a3a3a, #454545);
-  padding: 10px 15px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 2px solid #555;
+  background-color: var(--navbar-background);
+  color: var(--header-color);
+  padding: 15px 20px;
+  font-weight: bold;
+  font-size: 18px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
 
-.spell-header h2 {
-  margin: 0;
-  font-size: 18px;
+.spell-name {
+  font-size: 22px;
   font-weight: bold;
-  color: #f0f0f0;
-  outline: none;
+  color: var(--header-color);
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
 }
 
 .close-button {
   cursor: pointer;
   font-size: 24px;
-  color: #888;
+  color: var(--text-secondary);
   transition: color 0.2s;
 }
 
 .close-button:hover {
-  color: #e0e0e0;
+  color: var(--text-primary);
 }
 
 /* Información básica del hechizo */
 .spell-basic-info {
   display: flex;
   padding: 15px;
-  background: #333;
-  border-bottom: 1px solid #444;
+  background: var(--background-tertiary);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .spell-icon {
   width: 70px;
   height: 70px;
-  background: #222;
+  background: var(--background-primary);
   border-radius: 8px;
   margin-right: 15px;
   overflow: hidden;
-  border: 1px solid #555;
+  border: 1px solid var(--border-color);
 }
 
 .spell-image {
@@ -97,14 +112,14 @@
   height: 20px;
   border-radius: 50%;
   margin-left: 5px;
-  background: #444;
-  color: #aaa;
+  background: var(--background-tertiary);
+  color: var(--text-secondary);
   font-size: 12px;
   cursor: pointer;
 }
 
 .pa-icon {
-  color: #ffcc00;
+  color: var(--accent-color);
 }
 
 .range-icon, .line-icon, .area-icon {
@@ -113,36 +128,39 @@
 }
 
 .active {
-  background-color: #555;
-  color: #fff;
+  background-color: var(--button-primary);
+  color: var(--text-primary);
 }
 
 /* Pestañas */
 .spell-tabs {
   display: flex;
-  background: #252525;
-  border-bottom: 1px solid #444;
-  position: relative;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 15px;
+  background-color: var(--background-secondary);
 }
 
-.tab {
-  flex: 1;
-  text-align: center;
-  padding: 10px;
+.spell-tab {
+  padding: 10px 15px;
   cursor: pointer;
+  color: var(--text-secondary);
+  background-color: var(--background-secondary);
+  border-right: 1px solid var(--border-color);
   transition: background-color 0.2s;
-  font-size: 14px;
-  border-bottom: 3px solid transparent;
 }
 
-.tab:hover {
-  background: #333;
+.spell-tab:last-child {
+  border-right: none;
 }
 
-.tab.active {
-  background: #333;
-  border-bottom: 3px solid #f0c419;
-  color: #f0c419;
+.spell-tab.active {
+  background-color: var(--tab-active);
+  color: var(--text-primary);
+  font-weight: bold;
+}
+
+.spell-tab:hover:not(.active) {
+  background-color: var(--card-active);
 }
 
 .info-icon {
@@ -153,32 +171,110 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: #444;
+  background: var(--background-tertiary);
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #aaa;
+  color: var(--text-secondary);
   font-size: 12px;
   cursor: pointer;
 }
 
 /* Efectos */
 .spell-effects, .spell-conditions, .enemy-stats, .dominio-levels, .additional-stats {
-  padding: 15px;
-  background: #333;
-  max-height: none;
+  background-color: var(--background-primary);
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: 1px solid var(--border-color);
   overflow: visible;
-  height: auto;
+  max-height: none;
 }
 
-.effect-row, .condition-row, .resistance-row, .dominio-slider-container, .stat-row {
+.effect-row {
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
-  padding: 8px;
-  background: #3a3a3a;
+  padding: 12px;
+  background-color: var(--background-primary);
   border-radius: 5px;
+  margin-bottom: 10px;
   position: relative;
+  border: 1px solid var(--border-color);
+}
+
+.effect-domain {
+  flex: 0 0 120px;
+  display: flex;
+  align-items: center;
+}
+
+.effect-damage {
+  flex: 1;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.calculated-damage {
+  font-weight: bold;
+  color: var(--text-primary);
+  margin-left: 8px;
+}
+
+.remove-button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.3);
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 14px;
+  border-radius: 4px;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.remove-button:hover {
+  color: var(--text-primary);
+  background: rgba(255, 0, 0, 0.3);
+}
+
+/* Colores de dominio */
+.fire-text {
+  color: #ff5722;
+  font-weight: bold;
+  text-shadow: 0 0 5px rgba(255, 87, 34, 0.3);
+}
+
+.water-text {
+  color: #2196f3;
+  font-weight: bold;
+  text-shadow: 0 0 5px rgba(33, 150, 243, 0.3);
+}
+
+.air-text {
+  color: #9c27b0;
+  font-weight: bold;
+  text-shadow: 0 0 5px rgba(156, 39, 176, 0.3);
+}
+
+.earth-text {
+  color: #4caf50;
+  font-weight: bold;
+  text-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+}
+
+.healing-text {
+  color: #8bc34a;
+  font-weight: bold;
+  text-shadow: 0 0 5px rgba(139, 195, 74, 0.3);
 }
 
 .domain-level-row {
@@ -186,15 +282,19 @@
   align-items: center;
   width: 100%;
   gap: 8px;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
+  padding: 10px;
+  background-color: var(--background-primary);
+  border-radius: 5px;
+  border: 1px solid var(--border-color);
 }
 
 .domain-level-input {
-  width: 70px;
+  width: 80px;
   padding: 8px;
-  background: #444;
-  color: #e0e0e0;
-  border: 1px solid #555;
+  background-color: var(--background-primary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
   border-radius: 4px;
   outline: none;
   text-align: center;
@@ -203,7 +303,7 @@
 
 .dominio-slider-container {
   padding: 8px;
-  background: #3a3a3a;
+  background: var(--background-tertiary);
   border-radius: 5px;
   margin-bottom: 5px;
 }
@@ -212,15 +312,16 @@
   margin-bottom: 5px;
   min-width: 80px;
   display: inline-block;
+  color: var(--text-primary);
 }
 
 /* Styles for number inputs */
 input[type="number"] {
   width: 70px;
   padding: 8px;
-  background: #444;
-  color: #e0e0e0;
-  border: 1px solid #555;
+  background: var(--background-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
   border-radius: 4px;
   outline: none;
   text-align: center;
@@ -238,183 +339,133 @@ input[type="number"] {
   -moz-appearance: textfield;
 }
 
-.effect-domain {
-  flex: 0 0 120px;
-}
-
 .effect-domain select {
   width: 100%;
-  padding: 5px;
-  background: #444;
-  color: #e0e0e0;
-  border: 1px solid #555;
+  padding: 6px;
+  background-color: var(--background-primary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
   border-radius: 4px;
   outline: none;
-}
-
-.effect-damage {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  margin-left: 10px;
+  font-size: 14px;
 }
 
 .effect-damage span {
-  min-width: 30px;
-  text-align: center;
-  margin: 0 5px;
-  outline: none;
+  margin: 0 3px;
+  color: var(--text-secondary);
 }
 
 .damage-separator {
-  color: #888;
-}
-
-.calculated-damage {
-  font-weight: bold;
-  color: #4fc3f7;
-}
-
-.remove-button {
-  position: absolute;
-  right: 5px;
-  top: 5px;
-  width: 20px;
-  height: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: #444;
-  border-radius: 50%;
-  color: #aaa;
-  font-size: 12px;
-  cursor: pointer;
-  transition: background-color 0.2s, color 0.2s;
-}
-
-.remove-button:hover {
-  background: #f44336;
-  color: #fff;
+  color: var(--text-secondary);
 }
 
 .add-effect-button, .add-condition-button {
   width: 100%;
-  padding: 8px;
-  background: #444;
-  color: #e0e0e0;
+  padding: 10px;
+  margin-top: 10px;
+  background: var(--button-primary);
   border: none;
   border-radius: 5px;
+  color: var(--text-primary);
   cursor: pointer;
-  margin-top: 10px;
-  transition: background-color 0.2s;
+  font-size: 14px;
+  text-align: center;
 }
 
 .add-effect-button:hover, .add-condition-button:hover {
-  background: #555;
+  background: var(--button-hover);
 }
 
-/* Condiciones */
 .condition-text, .condition-effect {
-  padding: 5px;
-  outline: none;
+  flex: 1;
 }
 
 .condition-text {
-  flex: 1;
+  font-size: 14px;
   margin-right: 10px;
 }
 
 .condition-effect {
-  color: #aaa;
+  text-align: center;
 }
 
 .condition-damage {
-  color: #4fc3f7;
   font-weight: bold;
+  margin-left: 10px;
+  color: var(--text-primary);
 }
 
-/* Niveles de dominio */
 .dominio-levels h4, .additional-stats h4, .enemy-stats h4 {
   margin-top: 0;
   margin-bottom: 15px;
-  color: #f0c419;
-  border-bottom: 1px solid #555;
-  padding-bottom: 5px;
+  font-size: 16px;
+  color: var(--header-color);
+  text-align: center;
 }
 
 .dominio-slider-container {
-  flex-direction: column;
-  align-items: flex-start;
+  padding: 10px;
 }
 
 .dominio-slider-container label {
-  margin-bottom: 5px;
-  min-width: 80px;
+  margin-bottom: 8px;
 }
 
 input[type="range"] {
-  width: 100%;
-  margin: 5px 0;
   -webkit-appearance: none;
+  width: 100%;
   height: 8px;
-  background: #444;
+  background: var(--background-primary);
   border-radius: 4px;
   outline: none;
 }
 
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
+  appearance: none;
   width: 16px;
   height: 16px;
+  background: var(--accent-color);
   border-radius: 50%;
-  background: #f0c419;
   cursor: pointer;
 }
 
-/* Estadísticas del enemigo */
 .resistance-container {
-  max-height: none;
-  overflow: visible;
+  margin-top: 20px;
 }
 
 .resistance-row {
-  justify-content: space-between;
-  padding: 10px;
+  justify-content: flex-start;
+  gap: 10px;
 }
 
 .resistance-slider {
   flex: 1;
   display: flex;
   align-items: center;
-  margin-left: 10px;
+  gap: 10px;
 }
 
 .resistance-slider input[type="range"] {
   flex: 1;
-  -webkit-appearance: none;
-  height: 8px;
-  background: #444;
-  border-radius: 4px;
-  outline: none;
+  height: 6px;
+  background: var(--background-primary);
+  border-radius: 3px;
 }
 
 .resistance-slider input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
+  background: var(--accent-color);
   border-radius: 50%;
-  background: #f44336;
-  cursor: pointer;
 }
 
 .resistance-value {
-  min-width: 80px;
+  min-width: 50px;
   text-align: right;
-  margin-left: 10px;
-  color: #f44336;
+  font-weight: bold;
 }
 
-/* Estadísticas adicionales */
 .additional-stats-container {
   display: flex;
   flex-wrap: wrap;
@@ -423,15 +474,14 @@ input[type="range"]::-webkit-slider-thumb {
 
 .stats-column {
   flex: 1;
-  min-width: 150px;
+  min-width: 200px;
 }
 
 .stat-row {
-  padding: 8px;
-  margin-bottom: 5px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  margin-bottom: 8px;
+  background: var(--background-tertiary);
 }
 
 .stat-row label {
@@ -440,76 +490,78 @@ input[type="range"]::-webkit-slider-thumb {
 
 .stat-row input[type="number"] {
   width: 60px;
-  padding: 5px;
-  background: #444;
-  color: #e0e0e0;
-  border: 1px solid #555;
-  border-radius: 4px;
-  outline: none;
+  padding: 6px;
   text-align: center;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+  background: var(--background-primary);
+  color: var(--text-primary);
 }
 
-/* Opciones para el cálculo de daño */
+/* Opciones de cálculo de daño */
 .damage-calculator-options {
   padding: 15px;
-  background: #2d2d2d;
-  border-top: 1px solid #444;
+  margin-top: 15px;
+  background: var(--background-secondary);
 }
 
 .damage-calculator-options h3 {
   margin-top: 0;
   margin-bottom: 15px;
   font-size: 16px;
-  color: #f0c419;
-  border-bottom: 1px solid #555;
-  padding-bottom: 5px;
+  color: var(--header-color);
+  text-align: center;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 10px;
 }
 
 .option-group {
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 }
 
 .option-group label {
   display: block;
   margin-bottom: 5px;
   font-size: 14px;
+  color: var(--text-primary);
 }
 
 .option-group select {
   width: 100%;
   padding: 8px;
-  background: #444;
-  color: #e0e0e0;
-  border: 1px solid #555;
   border-radius: 4px;
-  outline: none;
+  border: 1px solid var(--border-color);
+  background: var(--background-tertiary);
+  color: var(--text-primary);
+  font-size: 14px;
 }
 
 .checkbox-group {
   display: flex;
   flex-wrap: wrap;
+  gap: 10px;
   margin-top: 15px;
 }
 
 .checkbox-item {
-  flex: 1 0 50%;
-  margin-bottom: 10px;
   display: flex;
   align-items: center;
+  flex: 1 0 45%;
+  font-size: 14px;
+  color: var(--text-primary);
 }
 
 .checkbox-item input[type="checkbox"] {
   margin-right: 5px;
 }
 
-/* Footer con nivel y botones */
 .spell-footer {
+  padding: 15px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 15px;
-  background: linear-gradient(to right, #252525, #333);
-  border-top: 1px solid #444;
+  background: var(--background-tertiary);
+  border-top: 1px solid var(--border-color);
 }
 
 .spell-level-indicator {
@@ -518,16 +570,17 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 .level-bullet {
-  width: 16px;
-  height: 16px;
+  width: 15px;
+  height: 15px;
   border-radius: 50%;
-  background: #f0c419;
-  margin-right: 10px;
+  background: var(--background-tertiary);
+  border: 1px solid var(--border-color);
+  margin-right: 3px;
 }
 
 .level-number {
-  font-weight: bold;
-  color: #f0c419;
+  font-size: 14px;
+  color: var(--text-secondary);
 }
 
 .spell-footer-buttons {
@@ -538,55 +591,33 @@ input[type="range"]::-webkit-slider-thumb {
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background: #444;
-  color: #aaa;
-  border: none;
-  margin-left: 10px;
-  cursor: pointer;
-  transition: background-color 0.2s, color 0.2s;
+  margin-left: 8px;
+  background: var(--background-secondary);
+  border: 1px solid var(--border-color);
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
   font-size: 14px;
+  color: var(--text-secondary);
+  transition: background-color 0.2s, color 0.2s;
 }
 
 .spell-button:hover {
-  background: #555;
-  color: #fff;
+  background: var(--button-primary);
+  color: var(--text-primary);
 }
 
 .refresh:hover {
-  color: #4fc3f7;
+  color: var(--accent-color);
 }
 
 .favorite:hover {
-  color: #f0c419;
+  color: #ff6b6b;
 }
 
-/* Estilos para scrollbars */
 ::-webkit-scrollbar {
   display: none;
-}
-
-/* Domain colors and icons */
-.fire-damage, .fire-text {
-  color: #ff5252 !important;
-}
-
-.water-damage, .water-text {
-  color: #40c4ff !important;
-}
-
-.air-damage, .air-text {
-  color: #b388ff !important;
-}
-
-.earth-damage, .earth-text {
-  color: #76ff03 !important;
-}
-
-.healing-damage, .healing-text {
-  color: #69f0ae !important;
 }
 
 .domain-icon {
@@ -603,28 +634,28 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 .fire-icon {
-  background: linear-gradient(135deg, #ff5252, #ff1744);
+  background-color: #f44336;
   color: white;
 }
 
 .water-icon {
-  background: linear-gradient(135deg, #40c4ff, #00b0ff);
+  background-color: #2196f3;
   color: white;
 }
 
 .air-icon {
-  background: linear-gradient(135deg, #b388ff, #7c4dff);
+  background-color: #9c27b0;
   color: white;
 }
 
 .earth-icon {
-  background: linear-gradient(135deg, #76ff03, #64dd17);
-  color: black;
+  background-color: #4caf50;
+  color: white;
 }
 
 .healing-icon {
-  background: linear-gradient(135deg, #69f0ae, #00e676);
-  color: black;
+  background-color: #8bc34a;
+  color: white;
 }
 
 /* Mejorar alineación en resistencias enemigas */
@@ -640,12 +671,6 @@ input[type="range"]::-webkit-slider-thumb {
   text-align: center;
 }
 
-.resistance-value {
-  min-width: 50px;
-  text-align: right;
-  font-weight: bold;
-}
-
 .resistance-row label {
   min-width: 60px;
   display: inline-block;
@@ -656,7 +681,7 @@ input[type="range"]::-webkit-slider-thumb {
   display: flex;
   align-items: center;
   padding: 12px;
-  background: #3a3a3a;
+  background: var(--background-tertiary);
   border-radius: 5px;
   margin-bottom: 8px;
 }
@@ -669,9 +694,9 @@ input[type="range"]::-webkit-slider-thumb {
 .domain-level-input, .resistance-input input {
   width: 70px;
   padding: 8px;
-  background: #444;
-  color: #e0e0e0;
-  border: 1px solid #555;
+  background-color: var(--background-primary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
   border-radius: 4px;
   outline: none;
   text-align: center;
@@ -692,196 +717,221 @@ input[type="range"]::-webkit-slider-thumb {
   flex-shrink: 0;
 }
 
-/* Actualización para pantallas grandes */
 @media (min-width: 768px) {
   .spell-content-wrapper {
     display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
+    min-height: 600px;
   }
-
+  
   .spell-main-content {
-    flex: 1;
-    min-width: 300px;
+    flex: 3;
   }
-
+  
   .spell-sidebar {
-    flex: 1;
-    min-width: 300px;
+    flex: 2;
+    border-left: 1px solid var(--border-color);
   }
 }
 
-/* Actualización para tres columnas */
 .spell-content-wrapper {
-  padding: 15px;
   display: flex;
   flex-wrap: wrap;
-  gap: 15px;
+  background-color: var(--background-secondary);
+  overflow: hidden;
   min-height: 800px;
+  padding: 15px;
+  border-top: 1px solid var(--border-color);
 }
 
 .spell-column {
-  flex: 1;
-  min-width: 300px;
-  margin-bottom: 15px;
-  display: flex;
-  flex-direction: column;
-}
-
-.effects-column {
-  order: 1;
-}
-
-.domains-column {
-  order: 2;
-}
-
-.options-column {
-  order: 3;
-}
-
-.spell-effects, .dominio-levels, .enemy-stats, .additional-stats, .damage-calculator-options, .additional-damages {
-  background: #333;
-  border-radius: 5px;
+  flex: 1 1 300px;
   padding: 15px;
-  margin-bottom: 15px;
-  overflow: visible;
+  border-right: 1px solid var(--border-color);
+  background-color: rgba(0, 0, 0, 0.2);
 }
 
-/* Eliminar el scroll y aumentar el alto para effects */
-.effects-container {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+.spell-column:last-child {
+  border-right: none;
+}
+
+.effects-container, .domains-container, .resistance-container {
   min-height: 450px;
+  max-height: none;
   overflow: visible;
-}
-
-/* Eliminar el scroll y aumentar el alto para domains */
-.domains-container {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  min-height: 300px;
-  overflow: visible;
-}
-
-/* Eliminar el scroll y aumentar el alto para enemy resistances */
-.resistance-container {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  min-height: 300px;
-  overflow: visible;
+  background-color: var(--background-primary);
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .section-title {
-  margin-top: 0;
-  margin-bottom: 15px;
-  color: #f0c419;
-  border-bottom: 1px solid #555;
-  padding-bottom: 5px;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: bold;
+  color: var(--text-primary);
+  margin-bottom: 15px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-color);
+  text-align: center;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
-/* Efectos */
-.effect-row {
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
-  padding: 8px;
-  background: #3a3a3a;
-  border-radius: 5px;
-  position: relative;
+.effect-row, .domain-level-row, .resistance-row {
+  background-color: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border-color);
+  transition: background-color 0.2s;
+}
+
+.effect-row:hover, .domain-level-row:hover, .resistance-row:hover {
+  background-color: rgba(0, 0, 0, 0.4);
 }
 
 .effect-domain {
-  flex: 0 0 120px;
+  flex: 0 0 100px;
 }
 
 .effect-domain select {
   width: 100%;
-  padding: 8px;
-  background: #444;
-  color: #e0e0e0;
-  border: 1px solid #555;
+  padding: 6px;
+  background: var(--background-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
   border-radius: 4px;
   outline: none;
+  font-size: 14px;
 }
 
 .effect-damage {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  margin-left: 10px;
+  flex: 0 0 80px;
+  text-align: center;
 }
 
 .effect-damage span {
-  min-width: 30px;
-  text-align: center;
-  margin: 0 5px;
-  outline: none;
+  margin: 0 3px;
+  color: var(--text-secondary);
 }
 
 .damage-separator {
-  color: #888;
+  color: var(--text-secondary);
 }
 
 .calculated-damage {
   font-weight: bold;
 }
 
-@media (max-width: 1100px) {
-  .spell-column {
-    flex-basis: calc(50% - 15px);
-  }
-  
-  .effects-column {
-    order: 1;
-  }
-  
-  .domains-column {
-    order: 2;
-  }
-  
-  .options-column {
-    order: 3;
-    flex-basis: 100%;
-  }
+.domain-label, .resistance-label {
+  color: var(--text-primary);
+  font-weight: bold;
 }
 
-@media (max-width: 768px) {
-  .spell-column {
-    flex-basis: 100%;
-  }
-  
-  .effects-column {
-    order: 1;
-  }
-  
-  .domains-column {
-    order: 2;
-  }
-  
-  .options-column {
-    order: 3;
-  }
+.spell-card {
+  background-color: var(--background-primary);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 8px var(--card-shadow);
+  overflow: hidden;
+  margin-bottom: 20px;
+  color: var(--text-primary);
 }
 
-/* Ajustes específicos para cada sección */
-.spell-effects {
-  height: auto;
-  max-height: none;
+.resistance-row, .dominio-slider-container {
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  background-color: var(--background-primary);
+  border: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.dominio-levels {
-  height: auto;
-  max-height: none;
+.domain-icon, .resistance-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  flex-shrink: 0;
 }
 
-.enemy-stats {
-  height: auto;
-  max-height: none;
+.value-display {
+  padding: 4px 8px;
+  background-color: var(--background-primary);
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+  min-width: 50px;
+  text-align: center;
+  color: var(--text-primary);
+  font-weight: bold;
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  width: 60%;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--progress-background);
+  outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent-color);
+  cursor: pointer;
+}
+
+input[type="number"] {
+  background-color: var(--background-primary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  border-radius: 4px;
+  padding: 4px 8px;
+  width: 80px;
+  text-align: center;
+}
+
+/* Estilo para el resultado del daño */
+.damage-result {
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--text-primary);
+  text-align: center;
+  margin: 15px 0;
+  padding: 10px;
+  background-color: var(--background-primary);
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+}
+
+/* Estilo para los checkboxes */
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  padding: 8px;
+  background-color: var(--background-primary);
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+}
+
+.checkbox-container label {
+  margin-left: 8px;
+  color: var(--text-primary);
+}
+
+input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+/* Estilos para iconos de dominio */
+.fire-text, .water-text, .air-text, .earth-text, .healing-text {
+  color: var(--text-primary);
 }
 
