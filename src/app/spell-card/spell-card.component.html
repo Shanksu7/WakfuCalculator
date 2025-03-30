@@ -37,6 +37,12 @@
   <div class="spell-content-wrapper">
     <!-- Columna 1: Efectos -->
     <div class="spell-column effects-column">
+      <!-- Advertencia de fórmula en desarrollo -->
+      <div class="formula-warning">
+        <div class="warning-icon">⚠️</div>
+        <div class="warning-text">The damage calculation formula is still in development and may show inaccurate results.</div>
+      </div>
+      
       <!-- Effects content -->
       <div class="spell-effects">
         <h4 class="section-title">Effects</h4>
@@ -168,19 +174,18 @@
         </div>
         
         <div class="checkbox-group">
-          <div class="checkbox-item">
-            <input type="checkbox" id="backAttack" [(ngModel)]="isBackAttack" [disabled]="attackPosition === 'espalda'" (change)="toggleAtaqueEspalda()">
-            <label for="backAttack">Back Attack</label>
+          <div class="toggle-item" [class.active]="isCritical" (click)="toggleGolpeCritico()">
+            <div class="toggle-switch">
+              <div class="toggle-indicator"></div>
+            </div>
+            <div class="toggle-label">Critical Hit</div>
           </div>
           
-          <div class="checkbox-item">
-            <input type="checkbox" id="criticalHit" [(ngModel)]="isCritical" (change)="toggleGolpeCritico()">
-            <label for="criticalHit">Critical Hit</label>
-          </div>
-          
-          <div class="checkbox-item">
-            <input type="checkbox" id="indirecto" [(ngModel)]="isIndirect" (change)="toggleEsIndirecto()">
-            <label for="indirecto">Indirect</label>
+          <div class="toggle-item" [class.active]="isIndirect" (click)="toggleEsIndirecto()">
+            <div class="toggle-switch">
+              <div class="toggle-indicator"></div>
+            </div>
+            <div class="toggle-label">Indirect</div>
           </div>
         </div>
       </div>

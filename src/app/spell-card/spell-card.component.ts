@@ -33,7 +33,6 @@ export class SpellCardComponent implements OnInit, OnDestroy {
   distanceType: string = 'mele'; // 'mele', 'distancia'
   isCritical: boolean = false;
   isBerserker: boolean = false;
-  isBackAttack: boolean = false;
   isIndirect: boolean = false;
   
   // Character domain levels
@@ -111,7 +110,6 @@ export class SpellCardComponent implements OnInit, OnDestroy {
       this.isCritical = simulation.isCritical;
       this.isBerserker = simulation.isBerserker;
       this.isIndirect = simulation.isIndirect;
-      this.isBackAttack = simulation.isBackAttack;
     }
   }
 
@@ -130,8 +128,7 @@ export class SpellCardComponent implements OnInit, OnDestroy {
         distanceType: this.distanceType,
         isCritical: this.isCritical,
         isBerserker: this.isBerserker,
-        isIndirect: this.isIndirect,
-        isBackAttack: this.isBackAttack
+        isIndirect: this.isIndirect
       };
       
       this.simulationService.updateSimulation(updatedSimulation);
@@ -273,61 +270,64 @@ export class SpellCardComponent implements OnInit, OnDestroy {
       const domain = effect.domain as DomainType;
       const baseDamage = effect.baseDamage || 0;
       
-      // Get resistance reduction
+      // Obtenemos el dominio elemental según el tipo de daño
+      const elementalDomain = this.domainLevels[domain] || 0;
+      
+      // Obtenemos los subdominios aplicables
+      let subDomains = 0;
+      
+      // Aplicar bonificación según la distancia
+      if (this.distanceType === 'distancia') {
+        const distBonus = this.additionalStats.dominioDistancia || 0;
+        subDomains += isNaN(distBonus) ? 0 : distBonus;
+      } else {
+        const meleBonus = this.additionalStats.dominioMele || 0;
+        subDomains += isNaN(meleBonus) ? 0 : meleBonus;
+      }
+      
+      // Aplicar bonificación de crítico si corresponde
+      if (this.isCritical) {
+        const critBonus = this.additionalStats.dominioCritico || 0;
+        subDomains += isNaN(critBonus) ? 0 : critBonus;
+      }
+      
+      // Aplicar bonificación de espalda si corresponde
+      if (this.attackPosition === 'espalda') {
+        const backBonus = this.additionalStats.dominioEspalda || 0;
+        subDomains += isNaN(backBonus) ? 0 : backBonus;
+      }
+      
+      // Calculamos el dominio total
+      const totalDomain = elementalDomain + subDomains;
+      
+      // Calculamos el daño incrementado
+      let increasedDamage = this.additionalStats.danioInfligido || 0;
+      if (this.isIndirect) {
+        const indirectBonus = this.additionalStats.danioIndirecto || 0;
+        increasedDamage += isNaN(indirectBonus) ? 0 : indirectBonus;
+      }
+      // Convertimos el porcentaje a multiplicador (ej: 30% -> 1.3)
+      const damageMultiplier = 1 + (increasedDamage / 100);
+      
+      // Cálculo inicial con dominio total
+      let calculatedDamage = baseDamage + (baseDamage * (totalDomain / 100));
+      
+      // Aplicamos el multiplicador de daño
+      calculatedDamage *= damageMultiplier;
+      
+      // Aplicamos el multiplicador de posición solo si no es indirecto
+      if (this.attackPosition === 'lado') {
+        calculatedDamage *= 1.1;
+      } else if (this.attackPosition === 'espalda') {
+        calculatedDamage *= 1.25;
+      }
+    
+      // Aplicamos la reducción por resistencia
       const resistance = this.obtenerResistenciaEnemigo(domain);
       const resistanceReduction = 1 - (this.obtenerPorcentajeResistencia(resistance) / 100);
-      
-      // Get primary domain level
-      const domainLevel = this.domainLevels[domain] || 0;
-      const domainMultiplier = domainLevel / 100;
-      
-      // Get secondary domain bonuses
-      const secondaryDomainBonus = this.obtenerBonificacionDominioSecundario(domain);
-      const secondaryMultiplier = (domainLevel + secondaryDomainBonus) / 100;
-      
-      // Apply position multipliers (front: 1.0, side: 1.1, back: 1.25)
-      let positionMultiplier = 1.0;
-      if (this.attackPosition === 'lado' && !this.isIndirect) {
-        positionMultiplier = 1.1;
-      } else if (this.attackPosition === 'espalda' && !this.isIndirect) {
-        positionMultiplier = 1.25;
-      }
-      
-      // Apply back attack checkbox bonus
-      if (this.isBackAttack && !this.isIndirect && this.attackPosition !== 'espalda') {
-        positionMultiplier = 1.25;
-      }
-      
-      // Apply critical multiplier (1.25 or 1.0)
-      const criticalMultiplier = this.isCritical ? 1.25 : 1.0;
-      
-      // Apply indirect damage flag (no position or distance bonuses if indirect)
-      
-      // Get damage infliction bonuses
-      const damageInflicted = this.obtenerDanioInfligidoAumentado(domain);
-      
-      // Apply all multipliers to base damage
-      // Base formula: base * domain * position * critical * resistance * damage_inflicted
-      let calculatedDamage = baseDamage;
-      
-      // Apply domain level multiplier (primary or secondary based on flags)
-      calculatedDamage *= this.isCritical || this.attackPosition === 'espalda' || 
-                         this.isBackAttack || this.distanceType !== 'mele' ? 
-                         secondaryMultiplier : domainMultiplier;
-      
-      // Apply position multiplier (if not indirect)
-      calculatedDamage *= positionMultiplier;
-      
-      // Apply critical multiplier
-      calculatedDamage *= criticalMultiplier;
-      
-      // Apply resistance reduction (lower damage based on enemy resistance)
       calculatedDamage *= resistanceReduction;
       
-      // Apply damage infliction bonus
-      calculatedDamage *= damageInflicted;
-      
-      // Round to integer
+      // Redondeamos al entero más cercano
       effect.calculatedDamage = Math.round(calculatedDamage);
     });
     
@@ -405,12 +405,6 @@ export class SpellCardComponent implements OnInit, OnDestroy {
   // Cambia la posición de ataque
   cambiarPosicionAtaque(position: string): void {
     this.attackPosition = position;
-    
-    // Disable back attack checkbox if already attacking from back
-    if (position === 'espalda') {
-      this.isBackAttack = false;
-    }
-    
     this.calculateDamage();
     this.saveCurrentSimulation();
   }
@@ -423,55 +417,22 @@ export class SpellCardComponent implements OnInit, OnDestroy {
   }
   
   // Toggle para el golpe crítico
-  toggleGolpeCritico(force?: boolean): void {
-    if (force !== undefined) {
-      this.isCritical = force;
-    } else {
-      this.isCritical = !this.isCritical;
-    }
-    
+  toggleGolpeCritico(): void {
+    this.isCritical = !this.isCritical;
     this.calculateDamage();
     this.saveCurrentSimulation();
   }
   
   // Toggle para el modo berserker
-  toggleModoBerserker(force?: boolean): void {
-    if (force !== undefined) {
-      this.isBerserker = force;
-    } else {
-      this.isBerserker = !this.isBerserker;
-    }
-    
-    this.calculateDamage();
-    this.saveCurrentSimulation();
-  }
-  
-  // Toggle para el ataque de espalda
-  toggleAtaqueEspalda(force?: boolean): void {
-    // No permitir activar si ya estamos atacando desde la espalda
-    if (this.attackPosition === 'espalda') {
-      this.isBackAttack = false;
-      return;
-    }
-    
-    if (force !== undefined) {
-      this.isBackAttack = force;
-    } else {
-      this.isBackAttack = !this.isBackAttack;
-    }
-    
+  toggleModoBerserker(): void {
+    this.isBerserker = !this.isBerserker;
     this.calculateDamage();
     this.saveCurrentSimulation();
   }
   
   // Toggle para el ataque indirecto
-  toggleEsIndirecto(force?: boolean): void {
-    if (force !== undefined) {
-      this.isIndirect = force;
-    } else {
-      this.isIndirect = !this.isIndirect;
-    }
-    
+  toggleEsIndirecto(): void {
+    this.isIndirect = !this.isIndirect;
     this.calculateDamage();
     this.saveCurrentSimulation();
   }

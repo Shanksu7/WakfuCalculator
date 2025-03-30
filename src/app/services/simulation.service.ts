@@ -42,7 +42,6 @@ export interface Simulation {
   isCritical: boolean;
   isBerserker: boolean;
   isIndirect: boolean;
-  isBackAttack: boolean;
 }
 
 @Injectable({
@@ -115,7 +114,6 @@ export class SimulationService {
       isCritical: false,
       isBerserker: false,
       isIndirect: false,
-      isBackAttack: false
     };
     
     this.simulations.next([defaultSimulation]);
@@ -187,7 +185,6 @@ export class SimulationService {
         isCritical: false,
         isBerserker: false,
         isIndirect: false,
-        isBackAttack: false
       };
     }
     
