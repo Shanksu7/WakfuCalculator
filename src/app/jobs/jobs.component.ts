@@ -11,16 +11,16 @@ interface Ingredient {
 })
 export class JobsComponent implements OnInit {
   // Niveles
-  currentLevel: number = 1;
-  goalLevel: number = 10;
+  currentLevel: number = 150;
+  goalLevel: number = 151;
   
   // Experiencia
   currentXP: number = 0;
   xpPerRecipe: number = 495;
   
   // Progreso
-  currentProgress: number = 15;
-  currentProgressLevel: number = 1;
+  currentProgress: number = 0;
+  currentProgressLevel: number = 150;
   
   // Cantidad total de recetas
   totalRequired: number = 0;
@@ -67,7 +67,7 @@ export class JobsComponent implements OnInit {
   
   // Fórmula para calcular la experiencia requerida para un nivel
   calculateLevelXP(level: number): number {
-    return Math.floor(100 * Math.pow(1.465, level - 1));
+    return (level * 150) + 75;
   }
   
   // Calcular cantidad de recetas y actualizar ingredientes
@@ -104,13 +104,12 @@ export class JobsComponent implements OnInit {
   }
   
   onGoalLevelChange(): void {
-    // Limitar el nivel objetivo a 10 niveles por encima del actual
-    if (this.goalLevel > this.currentLevel + 10) {
-      this.goalLevel = this.currentLevel + 10;
-    }
+    // Verificar límites solo cuando el usuario intenta excederlos
+    const maxAllowedLevel = this.currentLevel + 10;
     
-    // Asegurar que el nivel objetivo sea mayor o igual al nivel actual
-    if (this.goalLevel < this.currentLevel) {
+    if (this.goalLevel > maxAllowedLevel) {
+      this.goalLevel = maxAllowedLevel;
+    } else if (this.goalLevel < this.currentLevel) {
       this.goalLevel = this.currentLevel;
     }
     
@@ -124,5 +123,46 @@ export class JobsComponent implements OnInit {
   
   onXPPerRecipeChange(): void {
     this.calculateRequirements();
+  }
+  
+  // Métodos para botones de incremento/decremento
+  incrementCurrentLevel(): void {
+    this.currentLevel++;
+    if (this.goalLevel < this.currentLevel) {
+      this.goalLevel = this.currentLevel;
+    }
+    this.onCurrentLevelChange();
+  }
+  
+  decrementCurrentLevel(): void {
+    if (this.currentLevel > 1) {
+      this.currentLevel--;
+      this.onCurrentLevelChange();
+    }
+  }
+  
+  incrementGoalLevel(): void {
+    const maxAllowedLevel = this.currentLevel + 10;
+    if (this.goalLevel < maxAllowedLevel) {
+      this.goalLevel++;
+      this.onGoalLevelChange();
+    }
+  }
+  
+  decrementGoalLevel(): void {
+    if (this.goalLevel > this.currentLevel) {
+      this.goalLevel--;
+      this.onGoalLevelChange();
+    }
+  }
+  
+  incrementIngredient(index: number): void {
+    this.ingredients[index].quantity++;
+  }
+  
+  decrementIngredient(index: number): void {
+    if (this.ingredients[index].quantity > 0) {
+      this.ingredients[index].quantity--;
+    }
   }
 }

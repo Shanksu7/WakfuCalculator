@@ -2,34 +2,59 @@
   <h2>Calculator for Job's XP</h2>
   <p>Max 10 levels otherwise I'll have anxiety calculating more than that</p>
   
-  <label>Current Level:</label>
-  <input type="number" [(ngModel)]="currentLevel" min="1" max="200" (ngModelChange)="onCurrentLevelChange()">
-  <p *ngIf="currentLevel">{{ xpRequired }} required</p>
-  
-  <label>Goal Level:</label>
-  <input type="number" [(ngModel)]="goalLevel" min="1" max="200" (ngModelChange)="onGoalLevelChange()">
-  <p *ngIf="goalLevel && currentLevel < goalLevel">{{ xpNeeded }} XP needed from {{ currentLevel }} to {{ goalLevel }}</p>
+  <div class="progress-container">
+    <div class="progress-label">
+      <span>CURRENT XP</span>
+      <span>Lvl {{ currentProgressLevel }}</span>
+    </div>
+    <progress [value]="currentXP" [max]="xpRequired"></progress>
+  </div>
   
   <label>Current XP:</label>
   <input type="number" [(ngModel)]="currentXP" min="0" (ngModelChange)="onCurrentXPChange()">
   
+  <div class="level-input-container">
+    <label>Current Level:</label>
+    <div class="number-control">
+      <button (click)="decrementCurrentLevel()" [disabled]="currentLevel <= 1">-</button>
+      <input type="number" [(ngModel)]="currentLevel" min="1" max="200" (ngModelChange)="onCurrentLevelChange()">
+      <button (click)="incrementCurrentLevel()">+</button>
+    </div>
+  </div>
+  <p *ngIf="currentLevel">{{ xpRequired }} XP required for this level</p>
+  
+  <div class="level-input-container">
+    <label>Goal Level:</label>
+    <div class="number-control">
+      <button (click)="decrementGoalLevel()" [disabled]="goalLevel <= currentLevel">-</button>
+      <input type="number" [(ngModel)]="goalLevel" min="1" max="200" (ngModelChange)="onGoalLevelChange()">
+      <button (click)="incrementGoalLevel()" [disabled]="goalLevel >= currentLevel + 10">+</button>
+    </div>
+  </div>
+  <p *ngIf="goalLevel && currentLevel < goalLevel">{{ xpNeeded }} XP needed from {{ currentLevel }} to {{ goalLevel }}</p>
+  
   <label>XP per recipe:</label>
   <input type="number" [(ngModel)]="xpPerRecipe" min="1" (ngModelChange)="onXPPerRecipeChange()">
   
-  <div class="progress-container">
-    <div class="progress-label">
-      <span>COOKING</span>
-      <span>Lvl {{ currentProgressLevel }}</span>
+  <label class="total-required-label">Total recipes required: <span class="total-required">{{ totalRequired }}</span></label>
+  
+  <div class="ingredients-section">
+    <h3>Recipe Ingredients</h3>
+    <div class="ingredients-grid">
+      <div *ngFor="let item of ingredients; let i = index" class="ingredient-card">
+        <div class="ingredient-header">Ingredient {{ i + 1 }}</div>
+        <div class="ingredient-controls">
+          <div class="number-control">
+            <button (click)="decrementIngredient(i)" [disabled]="item.quantity <= 0">-</button>
+            <input type="number" [(ngModel)]="item.quantity" placeholder="Qty" min="0">
+            <button (click)="incrementIngredient(i)">+</button>
+          </div>
+        </div>
+        <div class="ingredient-total">
+          Total needed: <span>{{ item.quantity * totalRequired }}</span>
+        </div>
+      </div>
     </div>
-    <progress [value]="currentProgress" [max]="100"></progress>
-  </div>
-  
-  <label>Total required: <span class="total-required">{{ totalRequired }}</span></label>
-  
-  <div *ngFor="let item of ingredients; let i = index" class="ingredient-row">
-    <input type="number" [(ngModel)]="item.quantity" placeholder="Qty">
-    <span>Ingredient {{ i + 1 }} quantity</span>
-    <span class="ingredient-quantity">{{ item.quantity * totalRequired }}</span>
   </div>
 </div>
   

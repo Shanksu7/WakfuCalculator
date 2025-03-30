@@ -1,45 +1,42 @@
 .calculator-container {
-  max-width: 600px;
-  margin: 30px auto;
-  padding: 25px;
   background-color: #2a2a2a;
   border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
   color: #e0e0e0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 h2 {
-  color: #f0c419;
+  color: #ffcc00;
   text-align: center;
   margin-bottom: 20px;
-  font-size: 24px;
-  font-weight: bold;
 }
 
 p {
-  color: #ccc;
-  margin-bottom: 20px;
   text-align: center;
-  font-style: italic;
+  margin-bottom: 15px;
+  color: #bbbbbb;
 }
 
 label {
   display: block;
-  margin: 15px 0 8px;
-  color: #e0e0e0;
+  margin-top: 15px;
+  margin-bottom: 5px;
   font-weight: bold;
+  color: #ffcc00;
 }
 
 input[type="number"] {
   width: 100%;
   padding: 10px;
+  background-color: #3a3a3a;
   border: 1px solid #555;
   border-radius: 5px;
-  background-color: #3a3a3a;
   color: #e0e0e0;
-  font-size: 16px;
   margin-bottom: 10px;
-  box-sizing: border-box;
+  font-size: 16px;
 }
 
 input[type="number"]:focus {
@@ -59,84 +56,157 @@ input[type="number"] {
 }
 
 .progress-container {
-  margin: 30px 0;
-  background-color: #3a3a3a;
-  padding: 15px;
-  border-radius: 8px;
+  margin: 20px 0;
 }
 
 .progress-label {
   display: flex;
   justify-content: space-between;
-  color: #e0e0e0;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   font-weight: bold;
-}
-
-.progress-label span:first-child {
-  color: #4fc3f7;
-}
-
-.progress-label span:last-child {
-  color: #f0c419;
 }
 
 progress {
   width: 100%;
   height: 25px;
-  -webkit-appearance: none;
-  appearance: none;
-  border: none;
   border-radius: 5px;
-  background-color: #444;
+  overflow: hidden;
 }
 
 progress::-webkit-progress-bar {
-  background-color: #444;
+  background-color: #3a3a3a;
   border-radius: 5px;
 }
 
 progress::-webkit-progress-value {
-  background: linear-gradient(to right, #4fc3f7, #4CAF50);
+  background-color: #4CAF50;
   border-radius: 5px;
-  transition: width 0.3s ease;
+}
+
+/* Estilos para controles numéricos con botones */
+.level-input-container {
+  margin-bottom: 15px;
+}
+
+.number-control {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.number-control button {
+  width: 40px;
+  height: 40px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.number-control button:hover {
+  background-color: #45a049;
+}
+
+.number-control button:disabled {
+  background-color: #666;
+  cursor: not-allowed;
+}
+
+.number-control input {
+  flex: 1;
+  margin: 0 10px;
+  text-align: center;
+}
+
+/* Estilos para el total requerido */
+.total-required-label {
+  font-size: 18px;
+  margin: 20px 0;
+  text-align: center;
+  display: block;
 }
 
 .total-required {
-  color: #f0c419;
+  color: #ffcc00;
   font-weight: bold;
-  font-size: 18px;
+  font-size: 24px;
 }
 
-.ingredient-row {
-  display: flex;
-  align-items: center;
-  margin-bottom: 15px;
+/* Estilos para la sección de ingredientes */
+.ingredients-section {
+  margin-top: 30px;
+  border-top: 1px solid #555;
+  padding-top: 20px;
+}
+
+.ingredients-section h3 {
+  color: #ffcc00;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.ingredients-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.ingredient-card {
   background-color: #3a3a3a;
-  padding: 12px;
-  border-radius: 5px;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.ingredient-row input {
-  width: 80px;
-  margin-right: 15px;
-  padding: 8px;
-  border: 1px solid #555;
-  border-radius: 4px;
-  background-color: #444;
-  color: #e0e0e0;
+.ingredient-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
-.ingredient-row span {
-  flex: 1;
-}
-
-.ingredient-quantity {
-  color: #4fc3f7;
+.ingredient-header {
   font-weight: bold;
-  margin-left: 10px;
-  min-width: 50px;
-  text-align: right;
+  margin-bottom: 10px;
+  color: #ffcc00;
+  text-align: center;
+}
+
+.ingredient-controls {
+  margin-bottom: 15px;
+}
+
+.ingredient-controls .number-control button {
+  width: 30px;
+  height: 30px;
+  font-size: 16px;
+}
+
+.ingredient-total {
+  text-align: center;
+  font-size: 14px;
+}
+
+.ingredient-total span {
+  color: #4CAF50;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .ingredients-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+  
+  .calculator-container {
+    padding: 15px;
+  }
 }
 
 .container {
