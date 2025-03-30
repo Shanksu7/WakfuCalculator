@@ -251,19 +251,25 @@
           <button (click)="agregarEfecto()" class="add-spell-button">+ Add Spell</button>
         </div>
         <div class="effects-container compact">
-          <div class="effect-row mini" *ngFor="let effect of effects; let i = index">
+          <div class="effect-row mini" *ngFor="let effect of effects; let i = index" [ngClass]="effect.domain">
             <div class="effect-header">
               <div class="select-wrapper mini">
                 <div class="select-icon mini">
                   <span class="element-emoji mini" [ngClass]="effect.domain">
-                    <ng-container *ngIf="effect.domain === 'fire'">🔥</ng-container>
-                    <ng-container *ngIf="effect.domain === 'water'">💧</ng-container>
-                    <ng-container *ngIf="effect.domain === 'earth'">🌱</ng-container>
-                    <ng-container *ngIf="effect.domain === 'air'">💨</ng-container>
+                    <ng-container [ngSwitch]="effect.domain">
+                      <ng-container *ngSwitchCase="'fire'">🔥</ng-container>
+                      <ng-container *ngSwitchCase="'water'">💧</ng-container>
+                      <ng-container *ngSwitchCase="'earth'">🌱</ng-container>
+                      <ng-container *ngSwitchCase="'air'">💨</ng-container>
+                      <ng-container *ngSwitchDefault>🔥</ng-container>
+                    </ng-container>
                   </span>
                 </div>
-                <select [(ngModel)]="effect.domain" (change)="cambiarDominio(i, effect.domain)" class="domain-select mini">
-                  <option *ngFor="let domain of availableDomains" [value]="domain">{{ domain | titlecase }}</option>
+                <select [(ngModel)]="effect.domain" class="domain-select mini" (change)="calculateDamage()">
+                  <option value="fire">Fire</option>
+                  <option value="water">Water</option>
+                  <option value="earth">Earth</option>
+                  <option value="air">Air</option>
                 </select>
               </div>
               <button class="remove-button mini" (click)="eliminarEfecto(i)">✕</button>
