@@ -109,10 +109,13 @@
   transition: background-color 0.2s;
   width: 100%;
   margin-top: auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .card-button:hover {
   background-color: var(--button-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
 }
 
 .home-footer {

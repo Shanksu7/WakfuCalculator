@@ -432,11 +432,21 @@ input[type="range"]::-webkit-slider-thumb {
 
 .resistance-container {
   margin-top: 20px;
+  background-color: var(--background-primary);
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .resistance-row {
   justify-content: flex-start;
   gap: 10px;
+  background-color: var(--background-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  margin-bottom: 8px;
+  padding: 8px 12px;
 }
 
 .resistance-slider {
@@ -777,13 +787,16 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 .effect-row, .domain-level-row, .resistance-row {
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: var(--background-tertiary);
   border: 1px solid var(--border-color);
   transition: background-color 0.2s;
+  border-radius: 6px;
+  padding: 10px;
+  margin-bottom: 8px;
 }
 
 .effect-row:hover, .domain-level-row:hover, .resistance-row:hover {
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: var(--card-active);
 }
 
 .effect-domain {
@@ -837,8 +850,8 @@ input[type="range"]::-webkit-slider-thumb {
 .resistance-row, .dominio-slider-container {
   padding: 10px 12px;
   margin-bottom: 10px;
-  border-radius: 4px;
-  background-color: var(--background-primary);
+  border-radius: 6px;
+  background-color: var(--background-tertiary);
   border: 1px solid var(--border-color);
   display: flex;
   align-items: center;
@@ -933,5 +946,25 @@ input[type="checkbox"] {
 /* Estilos para iconos de dominio */
 .fire-text, .water-text, .air-text, .earth-text, .healing-text {
   color: var(--text-primary);
+}
+
+.enemy-stats {
+  padding: 15px;
+  background-color: var(--background-primary);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  margin-bottom: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.enemy-stats h4 {
+  color: var(--header-color);
+  margin-top: 0;
+  margin-bottom: 15px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 8px;
 }
 

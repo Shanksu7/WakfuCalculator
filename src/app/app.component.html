@@ -1,5 +1,5 @@
 <div class="app-container">
-  <nav class="navbar">
+  <nav class="navbar" [ngClass]="{'navbar-home': isHomePage}">
     <div class="navbar-brand">Wakfu Tools</div>
     <ul class="navbar-menu">
       <li class="navbar-item"><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a></li>

@@ -47,19 +47,20 @@
         </div>
       </div>
       
-      <div class="form-row">
-        <p *ngIf="currentLevel" class="recipe-info">
-          <strong>Required XP:</strong>
-          {{ xpRequired }} XP required for this level
-        </p>
-        
-        <p *ngIf="goalLevel && currentLevel < goalLevel" class="recipe-info">
-          <strong>XP Needed:</strong>
-          {{ xpNeeded }} XP needed from {{ currentLevel }} to {{ goalLevel }}
-        </p>
-      </div>
+      <p *ngIf="currentLevel" class="recipe-info">
+        <strong>Required XP:</strong>
+        {{ xpRequired }} XP required for this level
+      </p>
       
-      <div class="total-required-label">Total recipes required: <span class="total-required">{{ totalRequired }}</span></div>
+      <p *ngIf="goalLevel && currentLevel < goalLevel" class="recipe-info">
+        <strong>XP Needed:</strong>
+        {{ xpNeeded }} XP needed from {{ currentLevel }} to {{ goalLevel }}
+      </p>
+      
+      <div class="total-required-label">
+        Total recipes required: 
+        <span class="total-required">{{ totalRequired }}</span>
+      </div>
     </div>
     
     <div class="calculator-ingredients">
