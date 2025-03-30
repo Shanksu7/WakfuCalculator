@@ -1,6 +1,12 @@
 <div class="home-container">
   <div class="home-header">
-    <h1>Welcome to the Wakfu Calculator</h1>
+    <div class="xelor-decoration">
+      <div *ngIf="!imagesLoaded" class="placeholder-xelor">
+        <div class="xelor-silhouette"></div>
+      </div>
+      <img *ngIf="imagesLoaded && xelorImageUrl" [src]="xelorImageUrl" alt="Xelor" class="xelor-decoration-image fadeIn">
+    </div>
+    <h1>Welcome to the Wakfu Tools</h1>
     <p class="home-description">Useful tools to optimize your experience in the world of Wakfu</p>
   </div>
   
@@ -27,6 +33,24 @@
         <div class="feature-item">✓ Domain Optimization</div>
       </div>
       <button class="card-button">Go to Damage Calculator</button>
+    </div>
+  </div>
+  
+  <div class="creator-signature">
+    <div class="creator-avatar">
+      <div class="avatar-circle">
+        <div *ngIf="!imagesLoaded" class="avatar-placeholder">X</div>
+        <img *ngIf="imagesLoaded && xelorAvatarUrl" [src]="xelorAvatarUrl" alt="Xelor" class="xelor-image">
+      </div>
+    </div>
+    <div class="creator-info">
+      <h3>Crafted by <span class="creator-name">Shanksu</span></h3>
+      <p>Found a bug or have a suggestion? Reach out on Discord: <span class="discord-tag" (click)="copyToClipboard('shanksu')" [class.copied]="isCopied" title="Click para copiar al portapapeles">shanksu</span></p>
+      <div class="creator-info-tooltip">
+        <div class="copy-tooltip" *ngIf="isCopied">
+          <span class="copy-icon">✓</span> Copied!
+        </div>
+      </div>
     </div>
   </div>
   
