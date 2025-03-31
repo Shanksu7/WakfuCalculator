@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { SimulationService, Simulation, Effect, DomainType } from '../services/simulation.service';
+import { SimulationService, Simulation, Effect, DomainType, InflictedDamageSource } from '../services/simulation.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -87,6 +87,10 @@ export class SpellCardComponent implements OnInit, OnDestroy {
   showEnemyResistances: boolean = true;
   showCalculationOptions: boolean = true;
   showSubDomains: boolean = true;
+  showInflictedDamageSources: boolean = false;
+  inflictedDamageSources: InflictedDamageSource[] = [];
+  newInflictedDamageDescription: string = '';
+  newInflictedDamageValue: number = 0;
 
   private subscriptions: Subscription[] = [];
   
@@ -126,6 +130,7 @@ export class SpellCardComponent implements OnInit, OnDestroy {
       this.isCritical = simulation.isCritical;
       this.isBerserker = simulation.isBerserker;
       this.isIndirect = simulation.isIndirect;
+      this.inflictedDamageSources = [...simulation.inflictedDamageSources];
     }
   }
 
@@ -144,7 +149,8 @@ export class SpellCardComponent implements OnInit, OnDestroy {
         distanceType: this.distanceType,
         isCritical: this.isCritical,
         isBerserker: this.isBerserker,
-        isIndirect: this.isIndirect
+        isIndirect: this.isIndirect,
+        inflictedDamageSources: [...this.inflictedDamageSources]
       };
       
       this.simulationService.updateSimulation(updatedSimulation);
@@ -275,7 +281,13 @@ export class SpellCardComponent implements OnInit, OnDestroy {
     // Base damage inflicted
     let damageIncrease = this.additionalStats.danioInfligido || 0;
     if (isNaN(damageIncrease)) damageIncrease = 0;
-    
+
+    // Add damage from additional sources (only active ones)
+    const additionalDamage = this.inflictedDamageSources
+      .filter(source => source.active)
+      .reduce((sum, source) => sum + source.value, 0);
+    damageIncrease += additionalDamage;
+
     // Add element-specific damage bonus
     let elementDamage = 0;
     switch (domain) {
@@ -293,13 +305,13 @@ export class SpellCardComponent implements OnInit, OnDestroy {
         break;
     }
     damageIncrease += isNaN(elementDamage) ? 0 : elementDamage;
-    
+
     // Add indirect damage bonus if applicable
     if (this.isIndirect) {
       const indirectBonus = this.additionalStats.danioIndirecto || 0;
       damageIncrease += isNaN(indirectBonus) ? 0 : indirectBonus;
     }
-    
+
     return (damageIncrease / 100) + 1;
   }
   
@@ -624,6 +636,65 @@ export class SpellCardComponent implements OnInit, OnDestroy {
     this.showSubDomains = !this.showSubDomains;
   }
 
+  toggleInflictedDamageSources(): void {
+    this.showInflictedDamageSources = !this.showInflictedDamageSources;
+  }
+
+  addInflictedDamageSource(): void {
+    if (this.newInflictedDamageDescription && this.newInflictedDamageValue !== undefined) {
+      const newSource: InflictedDamageSource = {
+        id: Date.now().toString(),
+        description: this.newInflictedDamageDescription,
+        value: this.newInflictedDamageValue,
+        active: true
+      };
+
+      // Actualizar estado local
+      this.inflictedDamageSources = [...this.inflictedDamageSources, newSource];
+
+      // Actualizar simulación
+      const currentSimulation = this.simulationService.getCurrentSimulation();
+      if (currentSimulation) {
+        currentSimulation.inflictedDamageSources = [...this.inflictedDamageSources];
+        this.simulationService.updateSimulation(currentSimulation);
+        this.calculateDamage();
+      }
+
+      this.newInflictedDamageDescription = '';
+      this.newInflictedDamageValue = 0;
+    }
+  }
+
+  removeInflictedDamageSource(id: string): void {
+    // Actualizar estado local
+    this.inflictedDamageSources = this.inflictedDamageSources.filter(source => source.id !== id);
+
+    // Actualizar simulación
+    const currentSimulation = this.simulationService.getCurrentSimulation();
+    if (currentSimulation) {
+      currentSimulation.inflictedDamageSources = [...this.inflictedDamageSources];
+      this.simulationService.updateSimulation(currentSimulation);
+      this.calculateDamage();
+    }
+  }
+
+  toggleSourceActive(source: InflictedDamageSource): void {
+    // Actualizar estado local
+    const sourceIndex = this.inflictedDamageSources.findIndex(s => s.id === source.id);
+    if (sourceIndex !== -1) {
+      this.inflictedDamageSources[sourceIndex].active = !source.active;
+      this.inflictedDamageSources = [...this.inflictedDamageSources];
+
+      // Actualizar simulación
+      const currentSimulation = this.simulationService.getCurrentSimulation();
+      if (currentSimulation) {
+        currentSimulation.inflictedDamageSources = [...this.inflictedDamageSources];
+        this.simulationService.updateSimulation(currentSimulation);
+        this.calculateDamage();
+      }
+    }
+  }
+
   // Métodos para manejar el daño elemental
   getElementDamage(domain: DomainType): number {
     switch (domain) {
@@ -657,5 +728,13 @@ export class SpellCardComponent implements OnInit, OnDestroy {
         break;
     }
     this.calculateDamage();
+  }
+
+  // Actualizar el daño infligido base
+  updateBaseInflictedDamage(event: any): void {
+    const value = parseInt(event.target.value);
+    this.additionalStats.danioInfligido = isNaN(value) ? 0 : value;
+    this.calculateDamage();
+    this.saveCurrentSimulation();
   }
 }

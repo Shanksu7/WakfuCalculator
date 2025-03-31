@@ -184,9 +184,43 @@
           </div>
           <div class="subdomain-grid" *ngIf="showAdditionalDamage">
             <div class="stat-row mini">
-              <label>Inflicted Damage:</label>
-              <input type="number" min="0" [(ngModel)]="additionalStats.danioInfligido" (change)="calculateDamage()" class="subdomain-input mini">
-              <span class="percent-sign">%</span>
+              <div style="display: flex; align-items: center; width: 100%; justify-content: space-between;">
+                <label>Inflicted Damage:</label>
+                <div style="display: flex; align-items: center; gap: 4px;">
+                  <input type="number" [value]="additionalStats.danioInfligido" (input)="updateBaseInflictedDamage($event)" class="subdomain-input mini">
+                  <span class="percent-sign">%</span>
+                  <button class="add-source-btn" (click)="toggleInflictedDamageSources()" [class.active]="showInflictedDamageSources" title="Add damage sources">+</button>
+                </div>
+              </div>
+              <!-- Lista de fuentes de daño -->
+              <div class="damage-sources" [class.visible]="showInflictedDamageSources">
+                <div class="source-list">
+                  <div class="source-item" *ngFor="let source of inflictedDamageSources" [class.disabled]="!source.active">
+                    <div class="source-content">
+                      <span class="source-description">{{ source.description }}</span>
+                      <span class="source-value">+{{ source.value }}%</span>
+                    </div>
+                    <div class="source-actions">
+                      <div class="toggle-switch small" [class.active]="source.active" (click)="toggleSourceActive(source)" title="Enable/Disable this damage source">
+                        <div class="toggle-indicator" [class.active]="source.active"></div>
+                      </div>
+                      <button class="remove-source" (click)="removeInflictedDamageSource(source.id)" title="Remove this damage source">🗑️</button>
+                    </div>
+                  </div>
+                </div>
+                <!-- Formulario para agregar nueva fuente -->
+                <div class="add-source-form">
+                  <input type="text" [(ngModel)]="newInflictedDamageDescription" 
+                         placeholder="Description" 
+                         class="source-input"
+                         (keyup.enter)="addInflictedDamageSource()">
+                  <input type="number" [(ngModel)]="newInflictedDamageValue" 
+                         placeholder="0" 
+                         class="value-input"
+                         (keyup.enter)="addInflictedDamageSource()">
+                  <button class="add-button" (click)="addInflictedDamageSource()">Add</button>
+                </div>
+              </div>
             </div>
             
             <div class="stat-row mini">

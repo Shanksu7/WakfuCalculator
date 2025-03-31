@@ -38,6 +38,14 @@ export interface AdditionalStats {
   airElementDamage: number;
 }
 
+// Interfaz para fuentes de daño infligido
+export interface InflictedDamageSource {
+  id: string;
+  description: string;
+  value: number;
+  active: boolean;
+}
+
 // Interfaz para una simulación
 export interface Simulation {
   id: string;
@@ -51,6 +59,7 @@ export interface Simulation {
   isCritical: boolean;
   isBerserker: boolean;
   isIndirect: boolean;
+  inflictedDamageSources: InflictedDamageSource[];
 }
 
 @Injectable({
@@ -73,7 +82,7 @@ export class SimulationService {
     const savedData = localStorage.getItem(this.STORAGE_KEY);
     if (savedData) {
       try {
-        const loadedSimulations: Simulation[] = JSON.parse(savedData);
+        const loadedSimulations = this.parseSimulations(savedData);
         this.simulations.next(loadedSimulations);
         
         // Si hay simulaciones guardadas, seleccionar la primera por defecto
@@ -87,6 +96,50 @@ export class SimulationService {
     } else {
       this.initializeDefaultSimulation();
     }
+  }
+
+  private parseSimulations(simulationsJson: string): Simulation[] {
+    const simulations = JSON.parse(simulationsJson);
+    return simulations.map((sim: any) => ({
+      ...sim,
+      inflictedDamageSources: sim.inflictedDamageSources || [],
+      effects: sim.effects || [],
+      domainLevels: sim.domainLevels || {
+        fire: 0,
+        water: 0,
+        earth: 0,
+        air: 0,
+        healing: 0
+      },
+      enemyStats: sim.enemyStats || {
+        fireResistance: 0,
+        waterResistance: 0,
+        airResistance: 0,
+        earthResistance: 0
+      },
+      additionalStats: sim.additionalStats || {
+        dominioCritico: 0,
+        dominioMele: 0,
+        dominioEspalda: 0,
+        dominioDistancia: 0,
+        danioInfligido: 0,
+        danioIndirecto: 0,
+        danioCriticoInfligido: 0,
+        fireElementDamage: 0,
+        waterElementDamage: 0,
+        earthElementDamage: 0,
+        airElementDamage: 0
+      },
+      attackPosition: sim.attackPosition || 'frente',
+      distanceType: sim.distanceType || 'mele',
+      isCritical: sim.isCritical || false,
+      isBerserker: sim.isBerserker || false,
+      isIndirect: sim.isIndirect || false
+    }));
+  }
+
+  private saveSimulations(): void {
+    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.simulations.value));
   }
 
   private initializeDefaultSimulation(): void {
@@ -128,15 +181,12 @@ export class SimulationService {
       isCritical: false,
       isBerserker: false,
       isIndirect: false,
+      inflictedDamageSources: []
     };
     
     this.simulations.next([defaultSimulation]);
     this.currentSimulationId.next(defaultSimulation.id);
     this.saveSimulations();
-  }
-
-  private saveSimulations(): void {
-    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.simulations.value));
   }
 
   private generateId(): string {
@@ -204,6 +254,7 @@ export class SimulationService {
         isCritical: false,
         isBerserker: false,
         isIndirect: false,
+        inflictedDamageSources: []
       };
     }
     
