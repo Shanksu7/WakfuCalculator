@@ -130,9 +130,13 @@
       <div class="subdomains-section compact">
         <div class="section-header mini">
           <h4 class="section-title mini">Sub Domains</h4>
+          <button class="toggle-section-btn mini" (click)="toggleSubDomains()">
+            <span *ngIf="showSubDomains">▼</span>
+            <span *ngIf="!showSubDomains">▶</span>
+          </button>
         </div>
         
-        <div class="subdomain-grid">
+        <div class="subdomain-grid" *ngIf="showSubDomains">
           <div class="subdomain-columns">
             <div class="subdomain-column">
               <div class="stat-row mini">
@@ -172,7 +176,7 @@
       <div class="damage-bonuses-section compact">
         <div class="additional-damages mini-section">
           <div class="section-header mini">
-            <h4 class="section-title mini">Additional Damage</h4>
+            <h4 class="section-title mini">% Inflicted Damage</h4>
             <button class="toggle-section-btn mini" (click)="toggleAdditionalDamage()">
               <span *ngIf="showAdditionalDamage">▼</span>
               <span *ngIf="!showAdditionalDamage">▶</span>
@@ -180,7 +184,7 @@
           </div>
           <div class="subdomain-grid" *ngIf="showAdditionalDamage">
             <div class="stat-row mini">
-              <label>Damage:</label>
+              <label>Inflicted Damage:</label>
               <input type="number" min="0" [(ngModel)]="additionalStats.danioInfligido" (change)="calculateDamage()" class="subdomain-input mini">
               <span class="percent-sign">%</span>
             </div>
@@ -188,7 +192,7 @@
             <div class="stat-row mini">
               <div style="display: flex; align-items: center; width: 100%; justify-content: space-between;">
                 <div style="display: flex; align-items: center;">
-                  <label>Indirect:</label>
+                  <label>Indirect Damage:</label>
                   <div class="toggle-switch small" [class.active]="isIndirect" (click)="toggleEsIndirecto()">
                     <div class="toggle-indicator" [class.active]="isIndirect"></div>
                   </div>
@@ -201,7 +205,7 @@
             </div>
             
             <div class="stat-row mini">
-              <label>Critical:</label>
+              <label>Inflicted Critical Damage:</label>
               <input type="number" min="0" [(ngModel)]="additionalStats.danioCriticoInfligido" (change)="calculateDamage()" class="subdomain-input mini">
               <span class="percent-sign">%</span>
             </div>
@@ -229,11 +233,10 @@
               </div>
               <div class="resistance-input">
                 <input type="number" min="0" 
-                       [(ngModel)]="domain === 'fire' ? additionalStats.fireElementDamage : 
-                                   domain === 'water' ? additionalStats.waterElementDamage : 
-                                   domain === 'earth' ? additionalStats.earthElementDamage : 
-                                   additionalStats.airElementDamage" 
-                       (change)="calculateDamage()" class="element-input mini">
+                       [ngModel]="getElementDamage(domain)"
+                       (ngModelChange)="setElementDamage(domain, $event)"
+                       (change)="calculateDamage()" 
+                       class="element-input mini">
                 <span class="percent-sign">%</span>
               </div>
             </div>

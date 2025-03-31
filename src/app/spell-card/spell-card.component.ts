@@ -86,6 +86,7 @@ export class SpellCardComponent implements OnInit, OnDestroy {
   showElementDamage: boolean = true;
   showEnemyResistances: boolean = true;
   showCalculationOptions: boolean = true;
+  showSubDomains: boolean = true;
 
   private subscriptions: Subscription[] = [];
   
@@ -276,19 +277,22 @@ export class SpellCardComponent implements OnInit, OnDestroy {
     if (isNaN(damageIncrease)) damageIncrease = 0;
     
     // Add element-specific damage bonus
-    if (domain === 'fire') {
-      const fireDamage = this.additionalStats.fireElementDamage || 0;
-      damageIncrease += isNaN(fireDamage) ? 0 : fireDamage;
-    } else if (domain === 'water') {
-      const waterDamage = this.additionalStats.waterElementDamage || 0;
-      damageIncrease += isNaN(waterDamage) ? 0 : waterDamage;
-    } else if (domain === 'earth') {
-      const earthDamage = this.additionalStats.earthElementDamage || 0;
-      damageIncrease += isNaN(earthDamage) ? 0 : earthDamage;
-    } else if (domain === 'air') {
-      const airDamage = this.additionalStats.airElementDamage || 0;
-      damageIncrease += isNaN(airDamage) ? 0 : airDamage;
+    let elementDamage = 0;
+    switch (domain) {
+      case 'fire':
+        elementDamage = this.additionalStats.fireElementDamage || 0;
+        break;
+      case 'water':
+        elementDamage = this.additionalStats.waterElementDamage || 0;
+        break;
+      case 'earth':
+        elementDamage = this.additionalStats.earthElementDamage || 0;
+        break;
+      case 'air':
+        elementDamage = this.additionalStats.airElementDamage || 0;
+        break;
     }
+    damageIncrease += isNaN(elementDamage) ? 0 : elementDamage;
     
     // Add indirect damage bonus if applicable
     if (this.isIndirect) {
@@ -614,5 +618,44 @@ export class SpellCardComponent implements OnInit, OnDestroy {
   
   toggleCalculationOptions(): void {
     this.showCalculationOptions = !this.showCalculationOptions;
+  }
+
+  toggleSubDomains(): void {
+    this.showSubDomains = !this.showSubDomains;
+  }
+
+  // Métodos para manejar el daño elemental
+  getElementDamage(domain: DomainType): number {
+    switch (domain) {
+      case 'fire':
+        return this.additionalStats.fireElementDamage || 0;
+      case 'water':
+        return this.additionalStats.waterElementDamage || 0;
+      case 'earth':
+        return this.additionalStats.earthElementDamage || 0;
+      case 'air':
+        return this.additionalStats.airElementDamage || 0;
+      default:
+        return 0;
+    }
+  }
+
+  setElementDamage(domain: DomainType, value: number): void {
+    const numValue = isNaN(value) ? 0 : value;
+    switch (domain) {
+      case 'fire':
+        this.additionalStats.fireElementDamage = numValue;
+        break;
+      case 'water':
+        this.additionalStats.waterElementDamage = numValue;
+        break;
+      case 'earth':
+        this.additionalStats.earthElementDamage = numValue;
+        break;
+      case 'air':
+        this.additionalStats.airElementDamage = numValue;
+        break;
+    }
+    this.calculateDamage();
   }
 }
