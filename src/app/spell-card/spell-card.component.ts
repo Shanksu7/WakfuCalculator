@@ -53,11 +53,7 @@ export class SpellCardComponent implements OnInit, OnDestroy {
     dominioDistancia: 0,
     danioInfligido: 0,
     danioIndirecto: 0,
-    danioCriticoInfligido: 0,
-    fireElementDamage: 0,
-    waterElementDamage: 0,
-    earthElementDamage: 0,
-    airElementDamage: 0
+    danioCriticoInfligido: 0
   };
   
   // Enemy resistance statistics
@@ -83,7 +79,6 @@ export class SpellCardComponent implements OnInit, OnDestroy {
 
   // Collapsible sections
   showAdditionalDamage: boolean = true;
-  showElementDamage: boolean = true;
   showEnemyResistances: boolean = true;
   showCalculationOptions: boolean = true;
   showSubDomains: boolean = true;
@@ -287,24 +282,6 @@ export class SpellCardComponent implements OnInit, OnDestroy {
       .filter(source => source.active)
       .reduce((sum, source) => sum + source.value, 0);
     damageIncrease += additionalDamage;
-
-    // Add element-specific damage bonus
-    let elementDamage = 0;
-    switch (domain) {
-      case 'fire':
-        elementDamage = this.additionalStats.fireElementDamage || 0;
-        break;
-      case 'water':
-        elementDamage = this.additionalStats.waterElementDamage || 0;
-        break;
-      case 'earth':
-        elementDamage = this.additionalStats.earthElementDamage || 0;
-        break;
-      case 'air':
-        elementDamage = this.additionalStats.airElementDamage || 0;
-        break;
-    }
-    damageIncrease += isNaN(elementDamage) ? 0 : elementDamage;
 
     // Add indirect damage bonus if applicable
     if (this.isIndirect) {
@@ -620,10 +597,6 @@ export class SpellCardComponent implements OnInit, OnDestroy {
     this.showAdditionalDamage = !this.showAdditionalDamage;
   }
 
-  toggleElementDamage(): void {
-    this.showElementDamage = !this.showElementDamage;
-  }
-  
   toggleEnemyResistances(): void {
     this.showEnemyResistances = !this.showEnemyResistances;
   }
@@ -693,41 +666,6 @@ export class SpellCardComponent implements OnInit, OnDestroy {
         this.calculateDamage();
       }
     }
-  }
-
-  // Métodos para manejar el daño elemental
-  getElementDamage(domain: DomainType): number {
-    switch (domain) {
-      case 'fire':
-        return this.additionalStats.fireElementDamage || 0;
-      case 'water':
-        return this.additionalStats.waterElementDamage || 0;
-      case 'earth':
-        return this.additionalStats.earthElementDamage || 0;
-      case 'air':
-        return this.additionalStats.airElementDamage || 0;
-      default:
-        return 0;
-    }
-  }
-
-  setElementDamage(domain: DomainType, value: number): void {
-    const numValue = isNaN(value) ? 0 : value;
-    switch (domain) {
-      case 'fire':
-        this.additionalStats.fireElementDamage = numValue;
-        break;
-      case 'water':
-        this.additionalStats.waterElementDamage = numValue;
-        break;
-      case 'earth':
-        this.additionalStats.earthElementDamage = numValue;
-        break;
-      case 'air':
-        this.additionalStats.airElementDamage = numValue;
-        break;
-    }
-    this.calculateDamage();
   }
 
   // Actualizar el daño infligido base

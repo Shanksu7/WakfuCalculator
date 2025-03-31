@@ -245,37 +245,6 @@
             </div>
           </div>
         </div>
-        
-        <!-- Daño por elemento -->
-        <div class="element-damages mini-section">
-          <div class="section-header mini">
-            <h4 class="section-title mini">% Damage by Element</h4>
-            <button class="toggle-section-btn mini" (click)="toggleElementDamage()">
-              <span *ngIf="showElementDamage">▼</span>
-              <span *ngIf="!showElementDamage">▶</span>
-            </button>
-          </div>
-          <div class="element-damages-grid compact" *ngIf="showElementDamage">
-            <div class="element-damage-row mini" *ngFor="let domain of availableDomains">
-              <div class="element-icon mini" [ngClass]="domain + '-icon'">
-                <span class="element-emoji mini">
-                  <ng-container *ngIf="domain === 'fire'">🔥</ng-container>
-                  <ng-container *ngIf="domain === 'water'">💧</ng-container>
-                  <ng-container *ngIf="domain === 'earth'">🌱</ng-container>
-                  <ng-container *ngIf="domain === 'air'">💨</ng-container>
-                </span>
-              </div>
-              <div class="resistance-input">
-                <input type="number" min="0" 
-                       [ngModel]="getElementDamage(domain)"
-                       (ngModelChange)="setElementDamage(domain, $event)"
-                       (change)="calculateDamage()" 
-                       class="element-input mini">
-                <span class="percent-sign">%</span>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
 

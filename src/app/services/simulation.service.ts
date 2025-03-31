@@ -32,10 +32,6 @@ export interface AdditionalStats {
   danioInfligido: number;
   danioIndirecto: number;
   danioCriticoInfligido: number;
-  fireElementDamage: number;
-  waterElementDamage: number;
-  earthElementDamage: number;
-  airElementDamage: number;
 }
 
 // Interfaz para fuentes de daño infligido
@@ -124,11 +120,7 @@ export class SimulationService {
         dominioDistancia: 0,
         danioInfligido: 0,
         danioIndirecto: 0,
-        danioCriticoInfligido: 0,
-        fireElementDamage: 0,
-        waterElementDamage: 0,
-        earthElementDamage: 0,
-        airElementDamage: 0
+        danioCriticoInfligido: 0
       },
       attackPosition: sim.attackPosition || 'frente',
       distanceType: sim.distanceType || 'mele',
@@ -170,11 +162,7 @@ export class SimulationService {
         dominioDistancia: 0,
         danioInfligido: 0,
         danioIndirecto: 0,
-        danioCriticoInfligido: 0,
-        fireElementDamage: 0,
-        waterElementDamage: 0,
-        earthElementDamage: 0,
-        airElementDamage: 0
+        danioCriticoInfligido: 0
       },
       attackPosition: 'frente',
       distanceType: 'mele',
@@ -243,11 +231,7 @@ export class SimulationService {
           dominioDistancia: 0,
           danioInfligido: 0,
           danioIndirecto: 0,
-          danioCriticoInfligido: 0,
-          fireElementDamage: 0,
-          waterElementDamage: 0,
-          earthElementDamage: 0,
-          airElementDamage: 0
+          danioCriticoInfligido: 0
         },
         attackPosition: 'frente',
         distanceType: 'mele',
